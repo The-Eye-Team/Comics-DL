@@ -65,8 +65,7 @@ func getIssue(id string, issue string, wtgrp *sync.WaitGroup) {
 			continue
 		}
 		u := fmt.Sprintf("https://readcomicsonline.ru/uploads/manga/%s/chapters/%s/%02d.jpg", id, issue, j+1)
-		req, _ := http.NewRequest(http.MethodGet, u, strings.NewReader(""))
-		res, _ := http.DefaultClient.Do(req)
+		res := doRequest(fmt.Sprintf("https://readcomicsonline.ru/uploads/manga/%s/chapters/%s/%02d.jpg", id, issue, j+1))
 		if res.StatusCode >= 400 {
 			break
 		}
@@ -82,9 +81,7 @@ func getIssue(id string, issue string, wtgrp *sync.WaitGroup) {
 }
 
 func getDoc(lru string) *goquery.Document {
-	req, _ := http.NewRequest(http.MethodGet, lru, strings.NewReader(""))
-	res, _ := http.DefaultClient.Do(req)
-	doc, _ := goquery.NewDocumentFromReader(res.Body)
+	doc, _ := goquery.NewDocumentFromReader(doRequest(lru).Body)
 	return doc
 }
 
@@ -96,4 +93,10 @@ func doesFileExist(file string) bool {
 func log(message ...interface{}) {
 	fmt.Print("[" + time.Now().UTC().String()[0:19] + "] ")
 	fmt.Println(message...)
+}
+
+func doRequest(urlAsText string) *http.Response {
+	req, _ := http.NewRequest(http.MethodGet, urlAsText, strings.NewReader(""))
+	res, _ := http.DefaultClient.Do(req)
+	return res
 }
