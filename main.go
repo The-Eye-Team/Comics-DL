@@ -7,9 +7,9 @@ import (
 	"os"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/nektro/go-util/util"
 
 	flag "github.com/spf13/pflag"
 )
@@ -30,15 +30,15 @@ func main() {
 
 	id := *flagComic
 	if len(id) == 0 {
-		util.Log("Must send a valid comic ID")
-		util.Log(">If you'd like to download https://readcomicsonline.ru/comic/justice-league-2016")
-		util.Log(">then pass --comic-id justice-league-2016")
+		log("Must send a valid comic ID")
+		log(">If you'd like to download https://readcomicsonline.ru/comic/justice-league-2016")
+		log(">then pass --comic-id justice-league-2016")
 		return
 	}
-	util.Log("Saving comic:", id)
+	log("Saving comic:", id)
 
 	d := getDoc(domain + "/comic/" + id).Find("ul.chapters li")
-	util.Log("Found", d.Length(), "issues")
+	log("Found", d.Length(), "issues")
 	waitgroup := sync.WaitGroup{}
 
 	d.Each(func(i int, el *goquery.Selection) {
@@ -53,7 +53,7 @@ func main() {
 		}
 	})
 	waitgroup.Wait()
-	util.Log("Done!")
+	log("Done!")
 }
 
 func getIssue(id string, issue string, wtgrp *sync.WaitGroup) {
@@ -61,7 +61,7 @@ func getIssue(id string, issue string, wtgrp *sync.WaitGroup) {
 	os.MkdirAll(dir, os.ModePerm)
 	for j := 0; true; j++ {
 		pth := fmt.Sprintf("%s%02d.jpg", dir, j+1)
-		if util.DoesFileExist(pth) {
+		if doesFileExist(pth) {
 			continue
 		}
 		u := fmt.Sprintf("https://readcomicsonline.ru/uploads/manga/%s/chapters/%s/%02d.jpg", id, issue, j+1)
@@ -70,11 +70,11 @@ func getIssue(id string, issue string, wtgrp *sync.WaitGroup) {
 		if res.StatusCode >= 400 {
 			break
 		}
-		util.Log(u)
+		log(u)
 		bys, _ := ioutil.ReadAll(res.Body)
 		ioutil.WriteFile(pth, bys, os.ModePerm)
 	}
-	util.Log("Completed download of Issue", issue)
+	log("Completed download of Issue", issue)
 	//
 	// //
 	count--
@@ -86,4 +86,14 @@ func getDoc(lru string) *goquery.Document {
 	res, _ := http.DefaultClient.Do(req)
 	doc, _ := goquery.NewDocumentFromReader(res.Body)
 	return doc
+}
+
+func doesFileExist(file string) bool {
+	_, err := os.Stat(file)
+	return !os.IsNotExist(err)
+}
+
+func log(message ...interface{}) {
+	fmt.Print("[" + time.Now().UTC().String()[0:19] + "] ")
+	fmt.Println(message...)
 }
