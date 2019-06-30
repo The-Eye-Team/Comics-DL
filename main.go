@@ -39,6 +39,7 @@ func main() {
 
 	d := getDoc(domain + "/comic/" + id)
 	s := d.Find("ul.chapters li")
+	n := trim(d.Find("h2.listmanga-header").Eq(0).Text())
 	log("Found", d.Length(), "issues")
 
 	waitgroup := sync.WaitGroup{}
@@ -48,7 +49,7 @@ func main() {
 		is2 := is1[len(is1)-1]
 		waitgroup.Add(1)
 		count++
-		go getIssue(id, is2, &waitgroup)
+		go getIssue(id, n, is2, &waitgroup)
 		if count == *flagConcur {
 			waitgroup.Wait()
 		}
@@ -57,8 +58,8 @@ func main() {
 	log("Done!")
 }
 
-func getIssue(id string, issue string, wtgrp *sync.WaitGroup) {
-	dir := fmt.Sprintf("./results-jpg/%s/Issue %s/", id, issue)
+func getIssue(id string, name string, issue string, wtgrp *sync.WaitGroup) {
+	dir := fmt.Sprintf("./results-jpg/%s/Issue %s/", name, issue)
 	os.MkdirAll(dir, os.ModePerm)
 	for j := 0; true; j++ {
 		pth := fmt.Sprintf("%s%02d.jpg", dir, j+1)
@@ -76,7 +77,6 @@ func getIssue(id string, issue string, wtgrp *sync.WaitGroup) {
 	}
 	log("Completed download of Issue", issue)
 	//
-	// //
 	count--
 	wtgrp.Done()
 }
@@ -84,6 +84,10 @@ func getIssue(id string, issue string, wtgrp *sync.WaitGroup) {
 func getDoc(lru string) *goquery.Document {
 	doc, _ := goquery.NewDocumentFromReader(doRequest(lru).Body)
 	return doc
+}
+
+func trim(x string) string {
+	return strings.Trim(x, " \n\r\t")
 }
 
 func doesFileExist(file string) bool {
