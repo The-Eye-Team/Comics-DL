@@ -39,9 +39,9 @@ func main() {
 
 	d := getDoc(domain + "/comic/" + id).Find("ul.chapters li")
 	log("Found", d.Length(), "issues")
-	waitgroup := sync.WaitGroup{}
 
 	d.Each(func(i int, el *goquery.Selection) {
+	waitgroup := sync.WaitGroup{}
 		is0, _ := el.Children().First().Children().First().Attr("href")
 		is1 := strings.Split(is0, "/")
 		is2 := is1[len(is1)-1]
