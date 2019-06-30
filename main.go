@@ -37,19 +37,25 @@ func main() {
 	}
 	util.Log("Saving comic:", id)
 
-	ln := getDoc(domain + "/comic/" + id).Find("ul.chapters li").Length()
-	for i := 0; i < ln; i++ {
-		worker.Add(1)
+	d := getDoc(domain + "/comic/" + id).Find("ul.chapters li")
+	util.Log("Found", d.Length(), "issues")
+	waitgroup := sync.WaitGroup{}
+
+	d.Each(func(i int, el *goquery.Selection) {
+		is0, _ := el.Children().First().Children().First().Attr("href")
+		is1 := strings.Split(is0, "/")
+		is2 := is1[len(is1)-1]
+		waitgroup.Add(1)
 		count++
-		go getIssue(id, ln, i, &worker)
-		if count <= *flagConcur {
-			worker.Wait()
-			count = 0
+		go getIssue(id, is2, &waitgroup)
+		if count == *flagConcur {
+			waitgroup.Wait()
 		}
-	}
+	})
+	waitgroup.Wait()
+	util.Log("Done!")
 }
 
-	defer wrk.Done()
 func getIssue(id string, issue string, wtgrp *sync.WaitGroup) {
 	dir := fmt.Sprintf("./results-jpg/%s/Issue %s/", id, issue)
 	os.MkdirAll(dir, os.ModePerm)
@@ -69,6 +75,10 @@ func getIssue(id string, issue string, wtgrp *sync.WaitGroup) {
 		ioutil.WriteFile(pth, bys, os.ModePerm)
 	}
 	util.Log("Completed download of Issue", issue)
+	//
+	// //
+	count--
+	wtgrp.Done()
 }
 
 func getDoc(lru string) *goquery.Document {
