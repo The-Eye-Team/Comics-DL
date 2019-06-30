@@ -35,6 +35,7 @@ func main() {
 		util.Log(">then pass --comic-id justice-league-2016")
 		return
 	}
+	util.Log("Saving comic:", id)
 
 	ln := getDoc(domain + "/comic/" + id).Find("ul.chapters li").Length()
 	for i := 0; i < ln; i++ {
