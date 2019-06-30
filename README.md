@@ -7,7 +7,6 @@ A comics scraper with support for readcomicsonline.ru.
 ## Download
 ```
 go get -u github.com/The-Eye-Team/Comics-DL
-go build
 ```
 
 ## Usage
