@@ -69,6 +69,7 @@ func getIssue(id string, ln, i int, wrk *sync.WaitGroup) {
 		bys, _ := ioutil.ReadAll(res.Body)
 		ioutil.WriteFile(pth, bys, os.ModePerm)
 	}
+	util.Log("Completed download of Issue", issue)
 }
 
 func getDoc(lru string) *goquery.Document {
