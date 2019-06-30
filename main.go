@@ -25,7 +25,7 @@ var (
 
 func main() {
 	flagComic := flag.String("comic-id", "", "")
-	flagConcur := flag.Int("concurrency", 8, "The number of files to download simultaneously.")
+	flagConcur := flag.Int("concurrency", 4, "The number of files to download simultaneously.")
 	flag.Parse()
 
 	id := *flagComic

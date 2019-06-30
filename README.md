@@ -19,7 +19,7 @@ go build
 | Name | Default | Description |
 |------|---------|-------------|
 | `--comic-id` | Required. | The slug for the comic in the site URL. |
-| `--concurrency` | `8` | The number of simultaneous downloads to run. |
+| `--concurrency` | `4` | The number of simultaneous downloads to run. |
 
 ## License
 MIT.
