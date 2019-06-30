@@ -61,11 +61,10 @@ func getIssue(id string, issue string, wtgrp *sync.WaitGroup) {
 		u := fmt.Sprintf("https://readcomicsonline.ru/uploads/manga/%s/chapters/%s/%02d.jpg", id, issue, j+1)
 		req, _ := http.NewRequest(http.MethodGet, u, strings.NewReader(""))
 		res, _ := http.DefaultClient.Do(req)
-		sc := res.StatusCode
-		util.Log(sc, u, fmt.Sprintf("[issue %d/%d]", i+1, ln))
-		if sc >= 400 {
+		if res.StatusCode >= 400 {
 			break
 		}
+		util.Log(u)
 		bys, _ := ioutil.ReadAll(res.Body)
 		ioutil.WriteFile(pth, bys, os.ModePerm)
 	}
