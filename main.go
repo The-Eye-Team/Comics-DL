@@ -49,16 +49,16 @@ func main() {
 	}
 }
 
-func getIssue(id string, ln, i int, wrk *sync.WaitGroup) {
 	defer wrk.Done()
+func getIssue(id string, issue string, wtgrp *sync.WaitGroup) {
+	dir := fmt.Sprintf("./results-jpg/%s/Issue %s/", id, issue)
+	os.MkdirAll(dir, os.ModePerm)
 	for j := 0; true; j++ {
-		dir := fmt.Sprintf("./results.ru/%s/Issue %02d/", id, i+1)
-		os.MkdirAll(dir, os.ModePerm)
-		pth := fmt.Sprintf("%s/%02d.jpg", dir, j+1)
+		pth := fmt.Sprintf("%s%02d.jpg", dir, j+1)
 		if util.DoesFileExist(pth) {
 			continue
 		}
-		u := fmt.Sprintf("https://readcomicsonline.ru/uploads/manga/%s/chapters/%d/%02d.jpg", id, i+1, j+1)
+		u := fmt.Sprintf("https://readcomicsonline.ru/uploads/manga/%s/chapters/%s/%02d.jpg", id, issue, j+1)
 		req, _ := http.NewRequest(http.MethodGet, u, strings.NewReader(""))
 		res, _ := http.DefaultClient.Do(req)
 		sc := res.StatusCode
