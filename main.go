@@ -69,8 +69,8 @@ func getIssue(id string, name string, issue string, wtgrp *sync.WaitGroup) {
 		if doesFileExist(pth) {
 			continue
 		}
-		res := doRequest(fmt.Sprintf("https://readcomicsonline.ru/uploads/manga/%s/chapters/%s/%02d.jpg", id, issue, j+1))
 		u := fmt.Sprintf("https://readcomicsonline.ru/uploads/manga/%s/chapters/%s/%02d.jpg", id, issue, j)
+		res := doRequest(u)
 		if res.StatusCode >= 400 {
 			break
 		}
