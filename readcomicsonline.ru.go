@@ -2,7 +2,6 @@ package main
 
 import (
 	"archive/zip"
-	"fmt"
 	"io/ioutil"
 	"net/url"
 	"os"
@@ -46,7 +45,7 @@ func s01GetComic(id string) {
 	})
 	waitgroup.Wait()
 	if !keepJpg {
-		di := fmt.Sprintf(outputDir+"/jpg/%s/", n)
+		di := F(outputDir+"/jpg/%s/", n)
 		if doesDirectoryExist(di) {
 			os.RemoveAll(di)
 		}
@@ -54,30 +53,30 @@ func s01GetComic(id string) {
 }
 
 func s01GetIssue(id string, name string, issue string, row int) {
-	setRowText(row, fmt.Sprintf("[%s] Preparing...", issue))
-	dir2 := fmt.Sprintf(outputDir+"/cbz/%s/", name)
+	setRowText(row, F("[%s] Preparing...", issue))
+	dir2 := F(outputDir+"/cbz/%s/", name)
 	os.MkdirAll(dir2, os.ModePerm)
-	finp := fmt.Sprintf("%sIssue %s.cbz", dir2, issue)
+	finp := F("%sIssue %s.cbz", dir2, issue)
 
-	dir := fmt.Sprintf(outputDir+"/jpg/%s/Issue %s/", name, issue)
+	dir := F(outputDir+"/jpg/%s/Issue %s/", name, issue)
 	if !doesFileExist(finp) {
 		os.MkdirAll(dir, os.ModePerm)
 		for j := 1; true; j++ {
-			pth := fmt.Sprintf("%s%03d.jpg", dir, j)
+			pth := F("%s%03d.jpg", dir, j)
 			if doesFileExist(pth) {
 				continue
 			}
-			u := fmt.Sprintf("https://readcomicsonline.ru/uploads/manga/%s/chapters/%s/%02d.jpg", id, issue, j)
+			u := F("https://readcomicsonline.ru/uploads/manga/%s/chapters/%s/%02d.jpg", id, issue, j)
 			res := doRequest(u)
 			if res.StatusCode >= 400 {
 				break
 			}
-			setRowText(row, fmt.Sprintf("[%s] Downloading Issue %s, Page %d", issue, issue, j))
+			setRowText(row, F("[%s] Downloading Issue %s, Page %d", issue, issue, j))
 			bys, _ := ioutil.ReadAll(res.Body)
 			ioutil.WriteFile(pth, bys, os.ModePerm)
 		}
 		//
-		setRowText(row, fmt.Sprintf("[%s] Packing archive..", issue))
+		setRowText(row, F("[%s] Packing archive..", issue))
 		outf, _ := os.Create(finp)
 		outz := zip.NewWriter(outf)
 		files, _ := ioutil.ReadDir(dir)
@@ -88,7 +87,7 @@ func s01GetIssue(id string, name string, issue string, row int) {
 		}
 		outz.Close()
 	}
-	setRowText(row, fmt.Sprintf("[x] Completed Issue %s.", issue))
+	setRowText(row, F("[x] Completed Issue %s.", issue))
 	count--
 	waitgroup.Done()
 }

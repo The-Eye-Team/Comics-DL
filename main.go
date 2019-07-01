@@ -128,3 +128,8 @@ func doesDirectoryExist(path string) bool {
 	}
 	return true
 }
+
+// F is an shorthand alias to fmt.Sprintf
+func F(format string, args ...interface{}) string {
+	return fmt.Sprintf(format, args...)
+}
