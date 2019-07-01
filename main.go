@@ -87,37 +87,39 @@ func main() {
 
 func getIssue(id string, name string, issue string, row int) {
 	setRowText(row, fmt.Sprintf("[%s] Preparing...", issue))
-	dir := fmt.Sprintf("./results/jpg/%s/Issue %s/", name, issue)
-	os.MkdirAll(dir, os.ModePerm)
-	for j := 1; true; j++ {
-		pth := fmt.Sprintf("%s%02d.jpg", dir, j)
-		if doesFileExist(pth) {
-			continue
-		}
-		u := fmt.Sprintf("https://readcomicsonline.ru/uploads/manga/%s/chapters/%s/%02d.jpg", id, issue, j)
-		res := doRequest(u)
-		if res.StatusCode >= 400 {
-			break
-		}
-		setRowText(row, fmt.Sprintf("[%s] Downloading Issue %s, Page %02d", issue, issue, j))
-		bys, _ := ioutil.ReadAll(res.Body)
-		ioutil.WriteFile(pth, bys, os.ModePerm)
-	}
-	//
 	dir2 := fmt.Sprintf("./results/cbz/%s/", name)
 	os.MkdirAll(dir2, os.ModePerm)
 	finp := fmt.Sprintf("%sIssue %s.cbz", dir2, issue)
-	outf, _ := os.Create(finp)
-	outz := zip.NewWriter(outf)
-	files, _ := ioutil.ReadDir(dir)
-	for _, item := range files {
-		zw, _ := outz.Create(item.Name())
-		bs, _ := ioutil.ReadFile(dir + item.Name())
-		zw.Write(bs)
+
+	if !doesFileExist(finp) {
+		dir := fmt.Sprintf("./results/jpg/%s/Issue %s/", name, issue)
+		os.MkdirAll(dir, os.ModePerm)
+		for j := 1; true; j++ {
+			pth := fmt.Sprintf("%s%02d.jpg", dir, j)
+			if doesFileExist(pth) {
+				continue
+			}
+			u := fmt.Sprintf("https://readcomicsonline.ru/uploads/manga/%s/chapters/%s/%02d.jpg", id, issue, j)
+			res := doRequest(u)
+			if res.StatusCode >= 400 {
+				break
+			}
+			setRowText(row, fmt.Sprintf("[%s] Downloading Issue %s, Page %02d", issue, issue, j))
+			bys, _ := ioutil.ReadAll(res.Body)
+			ioutil.WriteFile(pth, bys, os.ModePerm)
+		}
+		//
+		outf, _ := os.Create(finp)
+		outz := zip.NewWriter(outf)
+		files, _ := ioutil.ReadDir(dir)
+		for _, item := range files {
+			zw, _ := outz.Create(item.Name())
+			bs, _ := ioutil.ReadFile(dir + item.Name())
+			zw.Write(bs)
+		}
+		outz.Close()
 	}
-	outz.Close()
 	setRowText(row, fmt.Sprintf("[x] Completed Issue %s.", issue))
-	//
 	count--
 	waitgroup.Done()
 }
