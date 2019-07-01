@@ -1,6 +1,7 @@
 package main
 
 import (
+	"archive/zip"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -79,6 +80,18 @@ func getIssue(id string, name string, issue string, wtgrp *sync.WaitGroup) {
 		ioutil.WriteFile(pth, bys, os.ModePerm)
 	}
 	log("Completed download of Issue", issue)
+	//
+	dir2 := fmt.Sprintf("./results/cbz/%s/", name)
+	os.MkdirAll(dir2, os.ModePerm)
+	files, _ := ioutil.ReadDir(dir)
+	outf, _ := os.Create(fmt.Sprintf("%sIssue %s.cbz", dir2, issue))
+	outz := zip.NewWriter(outf)
+	for _, item := range files {
+		zw, _ := outz.Create(item.Name())
+		bs, _ := ioutil.ReadFile(dir + item.Name())
+		zw.Write(bs)
+	}
+	outz.Close()
 	//
 	count--
 	waitgroup.Done()
