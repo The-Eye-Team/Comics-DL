@@ -120,7 +120,7 @@ func getIssue(id string, name string, issue string, row int) {
 			if res.StatusCode >= 400 {
 				break
 			}
-			setRowText(row, fmt.Sprintf("[%s] Downloading Issue %s, Page %02d", issue, issue, j))
+			setRowText(row, fmt.Sprintf("[%s] Downloading Issue %s, Page %d", issue, issue, j))
 			bys, _ := ioutil.ReadAll(res.Body)
 			ioutil.WriteFile(pth, bys, os.ModePerm)
 		}
