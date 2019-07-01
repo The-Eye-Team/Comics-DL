@@ -19,8 +19,8 @@ const (
 )
 
 var (
-	worker sync.WaitGroup
-	count  = 0
+	waitgroup *sync.WaitGroup
+	count     = 0
 )
 
 func main() {
@@ -42,7 +42,8 @@ func main() {
 	n := trim(d.Find("h2.listmanga-header").Eq(0).Text())
 	log("Found", s.Length(), "issues of", n)
 
-	waitgroup := sync.WaitGroup{}
+	wg := sync.WaitGroup{}
+	waitgroup = &wg
 	s.Each(func(i int, el *goquery.Selection) {
 		is0, _ := el.Children().First().Children().First().Attr("href")
 		is1 := strings.Split(is0, "/")
@@ -79,7 +80,7 @@ func getIssue(id string, name string, issue string, wtgrp *sync.WaitGroup) {
 	log("Completed download of Issue", issue)
 	//
 	count--
-	wtgrp.Done()
+	waitgroup.Done()
 }
 
 func getDoc(lru string) *goquery.Document {
