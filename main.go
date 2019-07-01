@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -23,6 +24,7 @@ const (
 )
 
 var (
+	outputDir string
 	waitgroup *sync.WaitGroup
 	uilist    *widgets.List
 	count     = 0
@@ -31,6 +33,7 @@ var (
 func main() {
 	flagComic := flag.String("comic-id", "", "")
 	flagConcur := flag.Int("concurrency", 4, "The number of files to download simultaneously.")
+	flagOutDir := flag.String("output-dir", "./results", "Output directory")
 	flag.Parse()
 
 	id := *flagComic
@@ -41,6 +44,9 @@ func main() {
 		return
 	}
 	log("Saving comic:", id)
+
+	outputDir, _ = filepath.Abs(*flagOutDir)
+	log("Saving all files to", outputDir)
 
 	//
 
@@ -59,7 +65,7 @@ func main() {
 	//
 
 	uilist = widgets.NewList()
-	uilist.Title = "Comics-DL Progress of " + n + " [" + id + "]"
+	uilist.Title = "Comics-DL Progress of " + n + " [" + id + "] ---- " + outputDir + " "
 	uilist.Rows = strings.Split(strings.Repeat("[x] ,", *flagConcur), ",")
 	uilist.WrapText = false
 	uilist.SetRect(0, 0, 100, *flagConcur*3)
@@ -87,12 +93,12 @@ func main() {
 
 func getIssue(id string, name string, issue string, row int) {
 	setRowText(row, fmt.Sprintf("[%s] Preparing...", issue))
-	dir2 := fmt.Sprintf("./results/cbz/%s/", name)
+	dir2 := fmt.Sprintf(outputDir+"/cbz/%s/", name)
 	os.MkdirAll(dir2, os.ModePerm)
 	finp := fmt.Sprintf("%sIssue %s.cbz", dir2, issue)
 
 	if !doesFileExist(finp) {
-		dir := fmt.Sprintf("./results/jpg/%s/Issue %s/", name, issue)
+		dir := fmt.Sprintf(outputDir+"/jpg/%s/Issue %s/", name, issue)
 		os.MkdirAll(dir, os.ModePerm)
 		for j := 1; true; j++ {
 			pth := fmt.Sprintf("%s%02d.jpg", dir, j)
