@@ -68,7 +68,7 @@ func main() {
 	uilist.Title = "Comics-DL ---- " + n + " [" + id + "] ---- " + outputDir + " "
 	uilist.Rows = strings.Split(strings.Repeat("[x] ,", *flagConcur), ",")
 	uilist.WrapText = false
-	uilist.SetRect(0, 0, 100, *flagConcur*3)
+	uilist.SetRect(0, 0, 100, *flagConcur*2)
 	termui.Render(uilist)
 
 	//
