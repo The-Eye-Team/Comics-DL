@@ -97,8 +97,8 @@ func getIssue(id string, name string, issue string, row int) {
 	os.MkdirAll(dir2, os.ModePerm)
 	finp := fmt.Sprintf("%sIssue %s.cbz", dir2, issue)
 
+	dir := fmt.Sprintf(outputDir+"/jpg/%s/Issue %s/", name, issue)
 	if !doesFileExist(finp) {
-		dir := fmt.Sprintf(outputDir+"/jpg/%s/Issue %s/", name, issue)
 		os.MkdirAll(dir, os.ModePerm)
 		for j := 1; true; j++ {
 			pth := fmt.Sprintf("%s%02d.jpg", dir, j)
