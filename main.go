@@ -1,9 +1,7 @@
 package main
 
 import (
-	"archive/zip"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -20,125 +18,62 @@ import (
 )
 
 const (
-	domain = "https://readcomicsonline.ru"
+	s01Host = "readcomicsonline.ru"
 )
 
 var (
 	outputDir string
-	waitgroup *sync.WaitGroup
 	uilist    *widgets.List
+	waitgroup *sync.WaitGroup
+	concurr   int
 	count     = 0
 	keepJpg   bool
 )
 
 func main() {
-	flagComic := flag.String("comic-id", "", "")
+	flagComicID := flag.String("comic-id", "", "readcomicsonline.ru comic ID")
 	flagConcur := flag.Int("concurrency", 4, "The number of files to download simultaneously.")
 	flagOutDir := flag.String("output-dir", "./results", "Output directory")
 	flagKeepJpg := flag.Bool("keep-jpg", false, "Flag to keep/delete .jpg files of individual pages.")
+	flagURL := flag.String("url", "", "URL of comic to download.")
 	flag.Parse()
 
-	id := *flagComic
-	if len(id) == 0 {
-		log("Must send a valid comic ID")
-		log(">If you'd like to download https://readcomicsonline.ru/comic/justice-league-2016")
-		log(">then pass --comic-id justice-league-2016")
-		return
-	}
-	log("Saving comic:", id)
+	//
 
 	outputDir, _ = filepath.Abs(*flagOutDir)
 	log("Saving all files to", outputDir)
 
+	concurr = *flagConcur
+
+	wg := sync.WaitGroup{}
+	waitgroup = &wg
+
 	keepJpg = *flagKeepJpg
 
 	//
+
+	if len(*flagComicID) > 0 {
+		*flagURL = "https://readcomicsonline.ru/comic/" + *flagComicID
+	}
+
+	//
+
+	lru, err := url.Parse(*flagURL)
+	if err != nil {
+		return
+	}
 
 	if err := termui.Init(); err != nil {
 		log("failed to initialize termui:", err)
 	}
 	defer termui.Close()
 
-	//
-
-	d := getDoc(domain + "/comic/" + id)
-	s := d.Find("ul.chapters li")
-	n := trim(d.Find("h2.listmanga-header").Eq(0).Text())
-	log("Found", s.Length(), "issues of", n)
-
-	//
-
-	uilist = widgets.NewList()
-	uilist.Title = "Comics-DL ---- " + n + " [" + id + "] ---- " + outputDir + " "
-	uilist.Rows = strings.Split(strings.Repeat("[x] ,", *flagConcur), ",")
-	uilist.WrapText = false
-	uilist.SetRect(0, 0, 100, *flagConcur*2)
-	termui.Render(uilist)
-
-	//
-
-	wg := sync.WaitGroup{}
-	waitgroup = &wg
-	s.Each(func(i int, el *goquery.Selection) {
-		is0, _ := el.Children().First().Children().First().Attr("href")
-		is1 := strings.Split(is0, "/")
-		is2 := is1[len(is1)-1]
-		is3, _ := url.ParseQuery("x=" + is2)
-		waitgroup.Add(1)
-		count++
-		go getIssue(id, n, is3["x"][0], findNextOpenRow(is2))
-		if count == *flagConcur {
-			waitgroup.Wait()
-		}
-	})
-	waitgroup.Wait()
-	if !keepJpg {
-		di := fmt.Sprintf(outputDir+"/jpg/%s/", n)
-		if doesDirectoryExist(di) {
-			os.RemoveAll(di)
-		}
+	switch lru.Host {
+	case "readcomicsonline.ru":
+		s01GetComic(strings.Split(lru.Path, "/")[2])
 	}
+
 	log("Done!")
-}
-
-func getIssue(id string, name string, issue string, row int) {
-	setRowText(row, fmt.Sprintf("[%s] Preparing...", issue))
-	dir2 := fmt.Sprintf(outputDir+"/cbz/%s/", name)
-	os.MkdirAll(dir2, os.ModePerm)
-	finp := fmt.Sprintf("%sIssue %s.cbz", dir2, issue)
-
-	dir := fmt.Sprintf(outputDir+"/jpg/%s/Issue %s/", name, issue)
-	if !doesFileExist(finp) {
-		os.MkdirAll(dir, os.ModePerm)
-		for j := 1; true; j++ {
-			pth := fmt.Sprintf("%s%03d.jpg", dir, j)
-			if doesFileExist(pth) {
-				continue
-			}
-			u := fmt.Sprintf("https://readcomicsonline.ru/uploads/manga/%s/chapters/%s/%02d.jpg", id, issue, j)
-			res := doRequest(u)
-			if res.StatusCode >= 400 {
-				break
-			}
-			setRowText(row, fmt.Sprintf("[%s] Downloading Issue %s, Page %d", issue, issue, j))
-			bys, _ := ioutil.ReadAll(res.Body)
-			ioutil.WriteFile(pth, bys, os.ModePerm)
-		}
-		//
-		setRowText(row, fmt.Sprintf("[%s] Packing archive..", issue))
-		outf, _ := os.Create(finp)
-		outz := zip.NewWriter(outf)
-		files, _ := ioutil.ReadDir(dir)
-		for _, item := range files {
-			zw, _ := outz.Create(item.Name())
-			bs, _ := ioutil.ReadFile(dir + item.Name())
-			zw.Write(bs)
-		}
-		outz.Close()
-	}
-	setRowText(row, fmt.Sprintf("[x] Completed Issue %s.", issue))
-	count--
-	waitgroup.Done()
 }
 
 func getDoc(lru string) *goquery.Document {
