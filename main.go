@@ -106,9 +106,9 @@ func getIssue(id string, name string, issue string, row int) {
 	//
 	dir2 := fmt.Sprintf("./results/cbz/%s/", name)
 	os.MkdirAll(dir2, os.ModePerm)
-	files, _ := ioutil.ReadDir(dir)
 	outf, _ := os.Create(fmt.Sprintf("%sIssue %s.cbz", dir2, issue))
 	outz := zip.NewWriter(outf)
+	files, _ := ioutil.ReadDir(dir)
 	for _, item := range files {
 		zw, _ := outz.Create(item.Name())
 		bs, _ := ioutil.ReadFile(dir + item.Name())
