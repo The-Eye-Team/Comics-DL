@@ -20,6 +20,7 @@ go get -u github.com/The-Eye-Team/Comics-DL
 | `--comic-id` | Required. | The slug for the comic in the site URL. |
 | `--concurrency` | `4` | The number of simultaneous downloads to run. |
 | `--output-dir` | `./results/` | Path to directory to save files to. |
+| `--keep-jpg` | `false` | Flag to keep/destroy the `.jpg` page data. |
 
 ## License
 MIT.

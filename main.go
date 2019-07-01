@@ -28,12 +28,14 @@ var (
 	waitgroup *sync.WaitGroup
 	uilist    *widgets.List
 	count     = 0
+	keepJpg   bool
 )
 
 func main() {
 	flagComic := flag.String("comic-id", "", "")
 	flagConcur := flag.Int("concurrency", 4, "The number of files to download simultaneously.")
 	flagOutDir := flag.String("output-dir", "./results", "Output directory")
+	flagKeepJpg := flag.Bool("keep-jpg", false, "Flag to keep/delete .jpg files of individual pages.")
 	flag.Parse()
 
 	id := *flagComic
@@ -47,6 +49,8 @@ func main() {
 
 	outputDir, _ = filepath.Abs(*flagOutDir)
 	log("Saving all files to", outputDir)
+
+	keepJpg = *flagKeepJpg
 
 	//
 
@@ -88,6 +92,12 @@ func main() {
 		}
 	})
 	waitgroup.Wait()
+	if !keepJpg {
+		di := fmt.Sprintf(outputDir+"/jpg/%s/", n)
+		if doesDirectoryExist(di) {
+			os.RemoveAll(di)
+		}
+	}
 	log("Done!")
 }
 
@@ -168,4 +178,15 @@ func findNextOpenRow(iss string) int {
 		}
 	}
 	return 0
+}
+
+func doesDirectoryExist(path string) bool {
+	s, err := os.Stat(path)
+	if err != nil {
+		return false
+	}
+	if !s.IsDir() {
+		return false
+	}
+	return true
 }
