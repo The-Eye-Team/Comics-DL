@@ -59,7 +59,7 @@ func main() {
 
 	//
 
-	lru, err := url.Parse(*flagURL)
+	urlO, err := url.Parse(*flagURL)
 	if err != nil {
 		return
 	}
@@ -69,7 +69,7 @@ func main() {
 	}
 	defer termui.Close()
 
-	switch lru.Host {
+	switch urlO.Host {
 	case s01Host:
 		outputDir += s01Host
 		s01GetComic(strings.Split(urlO.Path, "/")[2])
@@ -78,8 +78,8 @@ func main() {
 	log("Done!")
 }
 
-func getDoc(lru string) *goquery.Document {
-	doc, _ := goquery.NewDocumentFromReader(doRequest(lru).Body)
+func getDoc(urlS string) *goquery.Document {
+	doc, _ := goquery.NewDocumentFromReader(doRequest(urlS).Body)
 	return doc
 }
 
