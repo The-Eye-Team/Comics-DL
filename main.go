@@ -1,7 +1,9 @@
 package main
 
 import (
+	"archive/zip"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -141,4 +143,20 @@ func setupUIList(name string, id string) {
 	uilist.WrapText = false
 	uilist.SetRect(0, 0, 100, concurr*2)
 	termui.Render(uilist)
+}
+
+func packCbzArchive(dirIn string, fileOut string) {
+	outf, _ := os.Create(fileOut)
+	outz := zip.NewWriter(outf)
+	files, _ := ioutil.ReadDir(dirIn)
+	for _, item := range files {
+		zw, _ := outz.Create(item.Name())
+		bs, _ := ioutil.ReadFile(dirIn + item.Name())
+		zw.Write(bs)
+	}
+	outz.Close()
+
+	if !keepJpg {
+		os.RemoveAll(dirIn)
+	}
 }

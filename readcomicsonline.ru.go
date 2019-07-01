@@ -1,7 +1,6 @@
 package main
 
 import (
-	"archive/zip"
 	"io/ioutil"
 	"net/url"
 	"os"
@@ -67,15 +66,7 @@ func s01GetIssue(id string, name string, issue string, row int) {
 		}
 		//
 		setRowText(row, F("[%s] Packing archive..", issue))
-		outf, _ := os.Create(finp)
-		outz := zip.NewWriter(outf)
-		files, _ := ioutil.ReadDir(dir)
-		for _, item := range files {
-			zw, _ := outz.Create(item.Name())
-			bs, _ := ioutil.ReadFile(dir + item.Name())
-			zw.Write(bs)
-		}
-		outz.Close()
+		packCbzArchive(dir, finp)
 	}
 	setRowText(row, F("[x] Completed Issue %s.", issue))
 	count--
