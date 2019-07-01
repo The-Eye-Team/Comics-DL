@@ -12,8 +12,8 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/gizak/termui"
-	"github.com/gizak/termui/widgets"
+	"github.com/gizak/termui/v3"
+	"github.com/gizak/termui/v3/widgets"
 
 	flag "github.com/spf13/pflag"
 )
