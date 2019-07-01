@@ -76,6 +76,8 @@ func main() {
 	case s01Host:
 		outputDir += s01Host
 		s01GetComic(strings.Split(urlO.Path, "/")[2])
+	default:
+		log("Site not supported!")
 	}
 
 	log("Done!")
