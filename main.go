@@ -64,13 +64,13 @@ func main() {
 func getIssue(id string, name string, issue string, wtgrp *sync.WaitGroup) {
 	dir := fmt.Sprintf("./results-jpg/%s/Issue %s/", name, issue)
 	os.MkdirAll(dir, os.ModePerm)
-	for j := 0; true; j++ {
-		pth := fmt.Sprintf("%s%02d.jpg", dir, j+1)
+	for j := 1; true; j++ {
+		pth := fmt.Sprintf("%s%02d.jpg", dir, j)
 		if doesFileExist(pth) {
 			continue
 		}
-		u := fmt.Sprintf("https://readcomicsonline.ru/uploads/manga/%s/chapters/%s/%02d.jpg", id, issue, j+1)
 		res := doRequest(fmt.Sprintf("https://readcomicsonline.ru/uploads/manga/%s/chapters/%s/%02d.jpg", id, issue, j+1))
+		u := fmt.Sprintf("https://readcomicsonline.ru/uploads/manga/%s/chapters/%s/%02d.jpg", id, issue, j)
 		if res.StatusCode >= 400 {
 			break
 		}
