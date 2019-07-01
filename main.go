@@ -40,7 +40,7 @@ func main() {
 	d := getDoc(domain + "/comic/" + id)
 	s := d.Find("ul.chapters li")
 	n := trim(d.Find("h2.listmanga-header").Eq(0).Text())
-	log("Found", d.Length(), "issues")
+	log("Found", s.Length(), "issues of", n)
 
 	waitgroup := sync.WaitGroup{}
 	s.Each(func(i int, el *goquery.Selection) {
