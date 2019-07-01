@@ -12,6 +12,8 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/gizak/termui"
+	"github.com/gizak/termui/widgets"
 
 	flag "github.com/spf13/pflag"
 )
@@ -22,6 +24,7 @@ const (
 
 var (
 	waitgroup *sync.WaitGroup
+	uilist    *widgets.List
 	count     = 0
 )
 
@@ -39,10 +42,30 @@ func main() {
 	}
 	log("Saving comic:", id)
 
+	//
+
+	if err := termui.Init(); err != nil {
+		log("failed to initialize termui:", err)
+	}
+	defer termui.Close()
+
+	//
+
 	d := getDoc(domain + "/comic/" + id)
 	s := d.Find("ul.chapters li")
 	n := trim(d.Find("h2.listmanga-header").Eq(0).Text())
 	log("Found", s.Length(), "issues of", n)
+
+	//
+
+	uilist = widgets.NewList()
+	uilist.Title = "Comics-DL Progress of " + n + " [" + id + "]"
+	uilist.Rows = strings.Split(strings.Repeat("[x] ,", *flagConcur), ",")
+	uilist.WrapText = false
+	uilist.SetRect(0, 0, 100, *flagConcur*3)
+	termui.Render(uilist)
+
+	//
 
 	wg := sync.WaitGroup{}
 	waitgroup = &wg
@@ -53,7 +76,7 @@ func main() {
 		is3, _ := url.ParseQuery("x=" + is2)
 		waitgroup.Add(1)
 		count++
-		go getIssue(id, n, is3["x"][0], &waitgroup)
+		go getIssue(id, n, is3["x"][0], findNextOpenRow(is2))
 		if count == *flagConcur {
 			waitgroup.Wait()
 		}
@@ -62,7 +85,8 @@ func main() {
 	log("Done!")
 }
 
-func getIssue(id string, name string, issue string, wtgrp *sync.WaitGroup) {
+func getIssue(id string, name string, issue string, row int) {
+	setRowText(row, fmt.Sprintf("[%s] Preparing...", issue))
 	dir := fmt.Sprintf("./results/jpg/%s/Issue %s/", name, issue)
 	os.MkdirAll(dir, os.ModePerm)
 	for j := 1; true; j++ {
@@ -75,11 +99,10 @@ func getIssue(id string, name string, issue string, wtgrp *sync.WaitGroup) {
 		if res.StatusCode >= 400 {
 			break
 		}
-		log(u)
+		setRowText(row, fmt.Sprintf("[%s] Downloading Issue %s, Page %02d", issue, issue, j))
 		bys, _ := ioutil.ReadAll(res.Body)
 		ioutil.WriteFile(pth, bys, os.ModePerm)
 	}
-	log("Completed download of Issue", issue)
 	//
 	dir2 := fmt.Sprintf("./results/cbz/%s/", name)
 	os.MkdirAll(dir2, os.ModePerm)
@@ -92,6 +115,7 @@ func getIssue(id string, name string, issue string, wtgrp *sync.WaitGroup) {
 		zw.Write(bs)
 	}
 	outz.Close()
+	setRowText(row, fmt.Sprintf("[x] Completed Issue %s.", issue))
 	//
 	count--
 	waitgroup.Done()
@@ -120,4 +144,19 @@ func doRequest(urlAsText string) *http.Response {
 	req, _ := http.NewRequest(http.MethodGet, urlAsText, strings.NewReader(""))
 	res, _ := http.DefaultClient.Do(req)
 	return res
+}
+
+func setRowText(row int, text string) {
+	uilist.Rows[row] = text
+	termui.Render(uilist)
+}
+
+func findNextOpenRow(iss string) int {
+	for i, v := range uilist.Rows {
+		if strings.HasPrefix(v, "[x]") {
+			uilist.Rows[i] = "[r] Reserved for " + iss
+			return i
+		}
+	}
+	return -1
 }
