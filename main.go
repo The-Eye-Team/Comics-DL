@@ -43,6 +43,7 @@ func main() {
 	//
 
 	outputDir, _ = filepath.Abs(*flagOutDir)
+	outputDir = strings.Replace(outputDir, string(filepath.Separator), "/", -1)
 	outputDir += "/"
 	log("Saving all files to", outputDir)
 
