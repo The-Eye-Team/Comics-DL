@@ -47,9 +47,10 @@ func main() {
 		is0, _ := el.Children().First().Children().First().Attr("href")
 		is1 := strings.Split(is0, "/")
 		is2 := is1[len(is1)-1]
+		is3, _ := url.ParseQuery("x=" + is2)
 		waitgroup.Add(1)
 		count++
-		go getIssue(id, n, is2, &waitgroup)
+		go getIssue(id, n, is3["x"][0], &waitgroup)
 		if count == *flagConcur {
 			waitgroup.Wait()
 		}
