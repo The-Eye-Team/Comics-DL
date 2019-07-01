@@ -4,6 +4,7 @@
 
 A comic and hentai archiver that saves as `.cbz` with support for the following sites:
 - https://readcomicsonline.ru/
+- https://www.tsumino.com/Books
 
 ## Download
 ```
