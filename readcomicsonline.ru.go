@@ -8,8 +8,6 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/gizak/termui/v3"
-	"github.com/gizak/termui/v3/widgets"
 )
 
 func s01GetComic(id string) {
@@ -20,16 +18,7 @@ func s01GetComic(id string) {
 	n := trim(d.Find("h2.listmanga-header").Eq(0).Text())
 	log("Found", s.Length(), "issues of", n)
 
-	//
-
-	uilist = widgets.NewList()
-	uilist.Title = "Comics-DL ---- " + n + " [" + id + "] ---- " + outputDir + " "
-	uilist.Rows = strings.Split(strings.Repeat("[x] ,", concurr), ",")
-	uilist.WrapText = false
-	uilist.SetRect(0, 0, 100, concurr*2)
-	termui.Render(uilist)
-
-	//
+	setupUIList(n, id)
 
 	s.Each(func(i int, el *goquery.Selection) {
 		is0, _ := el.Children().First().Children().First().Attr("href")
@@ -44,6 +33,7 @@ func s01GetComic(id string) {
 		}
 	})
 	waitgroup.Wait()
+
 	if !keepJpg {
 		di := F(outputDir+"/jpg/%s/", n)
 		if doesDirectoryExist(di) {

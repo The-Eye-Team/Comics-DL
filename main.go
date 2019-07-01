@@ -133,3 +133,12 @@ func doesDirectoryExist(path string) bool {
 func F(format string, args ...interface{}) string {
 	return fmt.Sprintf(format, args...)
 }
+
+func setupUIList(name string, id string) {
+	uilist = widgets.NewList()
+	uilist.Title = "Comics-DL ---- " + name + " [" + id + "] ---- " + outputDir + " "
+	uilist.Rows = strings.Split(strings.Repeat("[x] ,", concurr), ",")
+	uilist.WrapText = false
+	uilist.SetRect(0, 0, 100, concurr*2)
+	termui.Render(uilist)
+}
