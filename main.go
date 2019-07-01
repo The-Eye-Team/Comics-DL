@@ -111,7 +111,7 @@ func getIssue(id string, name string, issue string, row int) {
 	if !doesFileExist(finp) {
 		os.MkdirAll(dir, os.ModePerm)
 		for j := 1; true; j++ {
-			pth := fmt.Sprintf("%s%02d.jpg", dir, j)
+			pth := fmt.Sprintf("%s%03d.jpg", dir, j)
 			if doesFileExist(pth) {
 				continue
 			}
