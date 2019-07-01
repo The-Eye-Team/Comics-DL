@@ -65,7 +65,7 @@ func main() {
 	//
 
 	uilist = widgets.NewList()
-	uilist.Title = "Comics-DL Progress of " + n + " [" + id + "] ---- " + outputDir + " "
+	uilist.Title = "Comics-DL ---- " + n + " [" + id + "] ---- " + outputDir + " "
 	uilist.Rows = strings.Split(strings.Repeat("[x] ,", *flagConcur), ",")
 	uilist.WrapText = false
 	uilist.SetRect(0, 0, 100, *flagConcur*3)
