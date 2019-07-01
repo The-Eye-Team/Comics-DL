@@ -70,17 +70,18 @@ func main() {
 	if err := termui.Init(); err != nil {
 		log("failed to initialize termui:", err)
 	}
-	defer termui.Close()
 
 	switch urlO.Host {
 	case s01Host:
 		outputDir += s01Host
 		s01GetComic(strings.Split(urlO.Path, "/")[2])
 	default:
+		termui.Close()
 		log("Site not supported!")
+		return
 	}
 
-	log("Done!")
+	termui.Close()
 }
 
 func getDoc(urlS string) *goquery.Document {
