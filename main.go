@@ -167,5 +167,5 @@ func findNextOpenRow(iss string) int {
 			return i
 		}
 	}
-	return -1
+	return 0
 }
