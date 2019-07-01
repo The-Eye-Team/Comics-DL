@@ -62,7 +62,7 @@ func main() {
 }
 
 func getIssue(id string, name string, issue string, wtgrp *sync.WaitGroup) {
-	dir := fmt.Sprintf("./results-jpg/%s/Issue %s/", name, issue)
+	dir := fmt.Sprintf("./results/jpg/%s/Issue %s/", name, issue)
 	os.MkdirAll(dir, os.ModePerm)
 	for j := 1; true; j++ {
 		pth := fmt.Sprintf("%s%02d.jpg", dir, j)
