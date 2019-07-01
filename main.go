@@ -41,6 +41,7 @@ func main() {
 	//
 
 	outputDir, _ = filepath.Abs(*flagOutDir)
+	outputDir += "/"
 	log("Saving all files to", outputDir)
 
 	concurr = *flagConcur
@@ -69,8 +70,9 @@ func main() {
 	defer termui.Close()
 
 	switch lru.Host {
-	case "readcomicsonline.ru":
-		s01GetComic(strings.Split(lru.Path, "/")[2])
+	case s01Host:
+		outputDir += s01Host
+		s01GetComic(strings.Split(urlO.Path, "/")[2])
 	}
 
 	log("Done!")

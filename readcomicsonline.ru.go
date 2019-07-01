@@ -46,7 +46,7 @@ func s01GetComic(id string) {
 	})
 	waitgroup.Wait()
 	if !keepJpg {
-		di := fmt.Sprintf(outputDir+"/"+s01Host+"/jpg/%s/", n)
+		di := fmt.Sprintf(outputDir+"/jpg/%s/", n)
 		if doesDirectoryExist(di) {
 			os.RemoveAll(di)
 		}
@@ -55,11 +55,11 @@ func s01GetComic(id string) {
 
 func s01GetIssue(id string, name string, issue string, row int) {
 	setRowText(row, fmt.Sprintf("[%s] Preparing...", issue))
-	dir2 := fmt.Sprintf(outputDir+"/"+s01Host+"/cbz/%s/", name)
+	dir2 := fmt.Sprintf(outputDir+"/cbz/%s/", name)
 	os.MkdirAll(dir2, os.ModePerm)
 	finp := fmt.Sprintf("%sIssue %s.cbz", dir2, issue)
 
-	dir := fmt.Sprintf(outputDir+"/"+s01Host+"/jpg/%s/Issue %s/", name, issue)
+	dir := fmt.Sprintf(outputDir+"/jpg/%s/Issue %s/", name, issue)
 	if !doesFileExist(finp) {
 		os.MkdirAll(dir, os.ModePerm)
 		for j := 1; true; j++ {
