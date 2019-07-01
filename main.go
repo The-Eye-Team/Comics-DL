@@ -125,6 +125,7 @@ func getIssue(id string, name string, issue string, row int) {
 			ioutil.WriteFile(pth, bys, os.ModePerm)
 		}
 		//
+		setRowText(row, fmt.Sprintf("[%s] Packing archive..", issue))
 		outf, _ := os.Create(finp)
 		outz := zip.NewWriter(outf)
 		files, _ := ioutil.ReadDir(dir)
