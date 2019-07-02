@@ -22,6 +22,7 @@ import (
 const (
 	s01Host = "readcomicsonline.ru"
 	s02Host = "www.tsumino.com"
+	s03Host = "e-hentai.org"
 )
 
 var (
@@ -85,6 +86,9 @@ func main() {
 	case s02Host:
 		outputDir += s02Host
 		s02GetComic(strings.Split(urlO.Path, "/")[3])
+	case s03Host:
+		outputDir += s03Host
+		s03GetComic(strings.Split(urlO.Path, "/")[2], urlO.Path)
 	default:
 		closeTermui()
 		log("Site not supported!")
