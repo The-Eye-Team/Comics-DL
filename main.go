@@ -70,6 +70,7 @@ func main() {
 
 	urlO, err := url.Parse(*flagURL)
 	if err != nil {
+		log("URL parse error. Aborting!")
 		return
 	}
 
