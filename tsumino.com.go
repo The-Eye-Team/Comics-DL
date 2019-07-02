@@ -19,6 +19,7 @@ func s02GetComic(id string) {
 	n1 := strings.Split(n0, " / ")[0]
 	n2 := strings.Replace(n1, " | ", " -- ", -1)
 	n := strings.Split(n2, " ---- ")[0]
+	n = id + " -- " + n
 
 	setupUIList(n, id)
 	setRowText(0, "Preparing...")
