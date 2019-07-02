@@ -31,6 +31,7 @@ var (
 	concurr   int
 	count     = 0
 	keepJpg   bool
+	useTermui bool
 )
 
 func main() {
@@ -39,6 +40,7 @@ func main() {
 	flagOutDir := flag.String("output-dir", "./results", "Output directory")
 	flagKeepJpg := flag.Bool("keep-jpg", false, "Flag to keep/delete .jpg files of individual pages.")
 	flagURL := flag.String("url", "", "URL of comic to download.")
+	flagUseTermui := flag.Bool("use-termui", false, "")
 	flag.Parse()
 
 	//
@@ -55,6 +57,8 @@ func main() {
 
 	keepJpg = *flagKeepJpg
 
+	useTermui = *flagUseTermui
+
 	//
 
 	if len(*flagComicID) > 0 {
@@ -68,8 +72,10 @@ func main() {
 		return
 	}
 
-	if err := termui.Init(); err != nil {
-		log("failed to initialize termui:", err)
+	if useTermui {
+		if err := termui.Init(); err != nil {
+			log("failed to initialize termui:", err)
+		}
 	}
 
 	switch urlO.Host {
@@ -80,12 +86,12 @@ func main() {
 		outputDir += s02Host
 		s02GetComic(strings.Split(urlO.Path, "/")[3])
 	default:
-		termui.Close()
+		closeTermui()
 		log("Site not supported!")
 		return
 	}
 
-	termui.Close()
+	closeTermui()
 }
 
 func getDoc(urlS string) *goquery.Document {
@@ -114,6 +120,10 @@ func doRequest(urlS string) *http.Response {
 }
 
 func setRowText(row int, text string) {
+	if !useTermui {
+		log(text)
+		return
+	}
 	uilist.Rows[row] = text
 	termui.Render(uilist)
 }
@@ -145,6 +155,9 @@ func F(format string, args ...interface{}) string {
 }
 
 func setupUIList(name string, id string) {
+	if !useTermui {
+		return
+	}
 	uilist = widgets.NewList()
 	uilist.Title = "Comics-DL ---- " + name + " [" + id + "] ---- " + outputDir + " "
 	uilist.Rows = strings.Split(strings.Repeat("[x] ,", concurr), ",")
@@ -166,5 +179,11 @@ func packCbzArchive(dirIn string, fileOut string) {
 
 	if !keepJpg {
 		os.RemoveAll(dirIn)
+	}
+}
+
+func closeTermui() {
+	if useTermui {
+		termui.Close()
 	}
 }
