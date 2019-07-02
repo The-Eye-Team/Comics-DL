@@ -16,8 +16,8 @@ func s02GetComic(id string) {
 	d := getDoc("https://" + s02Host + "/Book/Info/" + id)
 
 	n0 := trim(d.Find("#Title").Text())
-	n1 := strings.Replace(n0, " | ", " ---- ", -1)
-	n2 := strings.Replace(n1, " / ", " ---- ", -1)
+	n1 := strings.Split(n0, " / ")[0]
+	n2 := strings.Replace(n1, " | ", " -- ", -1)
 	n := strings.Split(n2, " ---- ")[0]
 
 	setupUIList(n, id)
