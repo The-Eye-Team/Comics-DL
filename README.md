@@ -3,8 +3,10 @@
 [![discord](https://img.shields.io/discord/302796547656253441.svg)](https://discord.gg/py3kX3Z)
 
 A comic and hentai archiver that saves as `.cbz` with support for the following sites:
-- https://readcomicsonline.ru/
-- https://www.tsumino.com/Books
+| Website | Example |
+|---------|---------|
+| https://readcomicsonline.ru/ | https://readcomicsonline.ru/comic/avengers-2016 |
+| https://www.tsumino.com/Books | https://www.tsumino.com/Book/Info/46820 |
 
 ## Download
 ```
