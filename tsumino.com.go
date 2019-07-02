@@ -23,6 +23,7 @@ func s02GetComic(id string) {
 
 	setupUIList(n, id)
 	setRowText(0, "Preparing...")
+	setRowText(0, n)
 
 	dir2 := outputDir + "/cbz/"
 	os.MkdirAll(dir2, os.ModePerm)
