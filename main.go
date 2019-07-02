@@ -107,8 +107,8 @@ func log(message ...interface{}) {
 	fmt.Println(message...)
 }
 
-func doRequest(urlAsText string) *http.Response {
-	req, _ := http.NewRequest(http.MethodGet, urlAsText, strings.NewReader(""))
+func doRequest(urlS string) *http.Response {
+	req, _ := http.NewRequest(http.MethodGet, urlS, strings.NewReader(""))
 	res, _ := http.DefaultClient.Do(req)
 	return res
 }
