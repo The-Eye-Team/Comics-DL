@@ -134,6 +134,9 @@ func setRowText(row int, text string) {
 }
 
 func findNextOpenRow(iss string) int {
+	if !useTermui {
+		return 0
+	}
 	for i, v := range uilist.Rows {
 		if strings.HasPrefix(v, "[x]") {
 			uilist.Rows[i] = "[r] Reserved for " + iss
