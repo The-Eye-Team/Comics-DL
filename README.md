@@ -4,11 +4,9 @@
 
 A comic and hentai archiver that saves as `.cbz` with support for the following sites:
 
-| Website | Example |
-|---------|---------|
-| https://readcomicsonline.ru/ | https://readcomicsonline.ru/comic/avengers-2016 |
-| https://www.tsumino.com/Books | https://www.tsumino.com/Book/Info/46820 |
-| https://e-hentai.org/ | https://e-hentai.org/g/1408957/c01126cb7f/ |
+- https://readcomicsonline.ru/
+- https://www.tsumino.com/
+- https://e-hentai.org/
 
 ## Download
 ```
