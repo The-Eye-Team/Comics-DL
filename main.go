@@ -37,10 +37,10 @@ var (
 
 func main() {
 	flagComicID := flag.String("comic-id", "", "readcomicsonline.ru comic ID")
-	flagConcur := flag.Int("concurrency", 4, "The number of files to download simultaneously.")
-	flagOutDir := flag.String("output-dir", "./results", "Output directory")
-	flagKeepJpg := flag.Bool("keep-jpg", false, "Flag to keep/delete .jpg files of individual pages.")
-	flagURL := flag.String("url", "", "URL of comic to download.")
+	flagConcur := flag.IntP("concurrency", "c", 4, "The number of files to download simultaneously.")
+	flagOutDir := flag.StringP("output-dir", "o", "./results", "Output directory")
+	flagKeepJpg := flag.BoolP("keep-jpg", "k", false, "Flag to keep/delete .jpg files of individual pages.")
+	flagURL := flag.StringP("url", "u", "", "URL of comic to download.")
 	flagUseTermui := flag.Bool("use-termui", false, "")
 	flag.Parse()
 
