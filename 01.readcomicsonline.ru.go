@@ -16,6 +16,7 @@ func s01GetComic(id string) {
 	s := d.Find("ul.chapters li")
 	n := trim(d.Find("h2.listmanga-header").Eq(0).Text())
 	n = strings.Replace(n, ":", "", -1)
+	n = strings.Replace(n, "/", "-", -1)
 	log("Found", s.Length(), "issues of", n)
 
 	setupUIList(n, id)
