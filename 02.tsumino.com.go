@@ -21,9 +21,8 @@ func s02GetComic(id string) {
 	n := strings.Split(n2, " ---- ")[0]
 	n = id + " -- " + n
 
-	setupUIList(n, id)
-	setRowText(0, "Preparing...")
-	setRowText(0, n)
+	log("Preparing...")
+	log(n)
 
 	dir2 := outputDir + "/cbz/"
 	os.MkdirAll(dir2, os.ModePerm)
@@ -32,7 +31,7 @@ func s02GetComic(id string) {
 	if !doesFileExist(finp) {
 		images := s02GetPageURLs(id)
 		ln := len(images)
-		setRowText(0, F("Found %d pages of %s", ln, n))
+		log(F("Found %d pages of %s", ln, n))
 
 		if ln > 0 {
 			dir := F("%s/jpg/%s/", outputDir, n)
@@ -45,16 +44,16 @@ func s02GetComic(id string) {
 				itm := url.Values{}
 				itm.Add("v", item)
 				res := doRequest("https://www.tsumino.com/Image/Object?name=" + itm.Encode()[2:])
-				setRowText(0, F("Downloading Page %d/%d", i+1, ln))
+				log(F("Downloading Page %d/%d", i+1, ln))
 				bys, _ := ioutil.ReadAll(res.Body)
 				ioutil.WriteFile(pth, bys, os.ModePerm)
 			}
 
-			setRowText(0, F("Packing archive.."))
+			log(F("Packing archive.."))
 			packCbzArchive(dir, finp)
 		}
 	}
-	setRowText(0, "Completed.")
+	log("Completed.")
 }
 
 func s02GetPageURLs(id string) []string {

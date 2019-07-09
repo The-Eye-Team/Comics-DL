@@ -13,8 +13,6 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/gizak/termui/v3"
-	"github.com/gizak/termui/v3/widgets"
 
 	flag "github.com/spf13/pflag"
 )
@@ -27,12 +25,10 @@ const (
 
 var (
 	outputDir string
-	uilist    *widgets.List
 	waitgroup *sync.WaitGroup
 	concurr   int
 	count     = 0
 	keepJpg   bool
-	useTermui bool
 )
 
 func main() {
@@ -41,7 +37,6 @@ func main() {
 	flagOutDir := flag.StringP("output-dir", "o", "./results", "Output directory")
 	flagKeepJpg := flag.BoolP("keep-jpg", "k", false, "Flag to keep/delete .jpg files of individual pages.")
 	flagURL := flag.StringP("url", "u", "", "URL of comic to download.")
-	flagUseTermui := flag.Bool("use-termui", false, "")
 	flag.Parse()
 
 	//
@@ -58,8 +53,6 @@ func main() {
 
 	keepJpg = *flagKeepJpg
 
-	useTermui = *flagUseTermui
-
 	//
 
 	if len(*flagComicID) > 0 {
@@ -74,12 +67,6 @@ func main() {
 		return
 	}
 
-	if useTermui {
-		if err := termui.Init(); err != nil {
-			log("failed to initialize termui:", err)
-		}
-	}
-
 	switch urlO.Host {
 	case s01Host:
 		outputDir += s01Host
@@ -91,12 +78,9 @@ func main() {
 		outputDir += s03Host
 		s03GetComic(strings.Split(urlO.Path, "/")[2], urlO.Path)
 	default:
-		closeTermui()
 		log("Site not supported!")
 		return
 	}
-
-	closeTermui()
 }
 
 func getDoc(urlS string) *goquery.Document {
@@ -124,28 +108,6 @@ func doRequest(urlS string) *http.Response {
 	return res
 }
 
-func setRowText(row int, text string) {
-	if !useTermui {
-		log(text)
-		return
-	}
-	uilist.Rows[row] = text
-	termui.Render(uilist)
-}
-
-func findNextOpenRow(iss string) int {
-	if !useTermui {
-		return 0
-	}
-	for i, v := range uilist.Rows {
-		if strings.HasPrefix(v, "[x]") {
-			uilist.Rows[i] = "[r] Reserved for " + iss
-			return i
-		}
-	}
-	return 0
-}
-
 func doesDirectoryExist(path string) bool {
 	s, err := os.Stat(path)
 	if err != nil {
@@ -162,18 +124,6 @@ func F(format string, args ...interface{}) string {
 	return fmt.Sprintf(format, args...)
 }
 
-func setupUIList(name string, id string) {
-	if !useTermui {
-		return
-	}
-	uilist = widgets.NewList()
-	uilist.Title = "Comics-DL ---- " + name + " [" + id + "] ---- " + outputDir + " "
-	uilist.Rows = strings.Split(strings.Repeat("[x] ,", concurr), ",")
-	uilist.WrapText = false
-	uilist.SetRect(0, 0, 100, concurr*2)
-	termui.Render(uilist)
-}
-
 func packCbzArchive(dirIn string, fileOut string) {
 	outf, _ := os.Create(fileOut)
 	outz := zip.NewWriter(outf)
@@ -187,11 +137,5 @@ func packCbzArchive(dirIn string, fileOut string) {
 
 	if !keepJpg {
 		os.RemoveAll(dirIn)
-	}
-}
-
-func closeTermui() {
-	if useTermui {
-		termui.Close()
 	}
 }

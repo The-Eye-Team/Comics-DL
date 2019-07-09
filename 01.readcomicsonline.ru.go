@@ -17,8 +17,6 @@ func s01GetComic(id string) {
 	n = strings.Replace(n, "/", "-", -1)
 	log("Found", s.Length(), "issues of", n)
 
-	setupUIList(n, id)
-
 	s.Each(func(i int, el *goquery.Selection) {
 		is0, _ := el.Children().First().Children().First().Attr("href")
 		is1 := strings.Split(is0, "/")
@@ -26,7 +24,7 @@ func s01GetComic(id string) {
 		is3, _ := url.ParseQuery("x=" + is2)
 		waitgroup.Add(1)
 		count++
-		go s01GetIssue(id, n, is3["x"][0], findNextOpenRow(is2))
+		go s01GetIssue(id, n, is3["x"][0])
 		if count == concurr {
 			waitgroup.Wait()
 		}
@@ -41,7 +39,7 @@ func s01GetComic(id string) {
 	}
 }
 
-func s01GetIssue(id string, name string, issue string, row int) {
+func s01GetIssue(id string, name string, issue string) {
 	dir2 := F(outputDir+"/cbz/%s/", name)
 	os.MkdirAll(dir2, os.ModePerm)
 	finp := F("%sIssue %s.cbz", dir2, issue)
@@ -59,12 +57,12 @@ func s01GetIssue(id string, name string, issue string, row int) {
 			if res.StatusCode >= 400 {
 				break
 			}
-			setRowText(row, F("[%s] Downloading Issue %s, Page %d", issue, issue, j))
+			log(F("[%s] Downloading Issue %s, Page %d", issue, issue, j))
 			bys, _ := ioutil.ReadAll(res.Body)
 			ioutil.WriteFile(pth, bys, os.ModePerm)
 		}
 		//
-		setRowText(row, F("[%s] Packing archive..", issue))
+		log(F("[%s] Packing archive..", issue))
 		packCbzArchive(dir, finp)
 	}
 	count--
