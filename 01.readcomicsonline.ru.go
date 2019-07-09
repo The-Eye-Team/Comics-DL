@@ -10,8 +10,6 @@ import (
 )
 
 func s01GetComic(id string) {
-	log("Saving comic: readcomicsonline.ru /", id)
-
 	d := getDoc("https://" + s01Host + "/comic/" + id)
 	s := d.Find("ul.chapters li")
 	n := trim(d.Find("h2.listmanga-header").Eq(0).Text())
@@ -44,7 +42,6 @@ func s01GetComic(id string) {
 }
 
 func s01GetIssue(id string, name string, issue string, row int) {
-	setRowText(row, F("[%s] Preparing...", issue))
 	dir2 := F(outputDir+"/cbz/%s/", name)
 	os.MkdirAll(dir2, os.ModePerm)
 	finp := F("%sIssue %s.cbz", dir2, issue)
@@ -70,7 +67,6 @@ func s01GetIssue(id string, name string, issue string, row int) {
 		setRowText(row, F("[%s] Packing archive..", issue))
 		packCbzArchive(dir, finp)
 	}
-	setRowText(row, F("[x] Completed Issue %s.", issue))
 	count--
 	waitgroup.Done()
 }
