@@ -19,12 +19,12 @@ go get -u github.com/The-Eye-Team/Comics-DL
 ```
 
 ### Flags
-| Name | Default | Description |
-|------|---------|-------------|
-| `--url` | Required. | URL of comic to save. |
-| `--concurrency` | `4` | The number of simultaneous downloads to run. |
-| `--output-dir` | `./results/` | Path to directory to save files to. |
-| `--keep-jpg` | `false` | Flag to keep/destroy the `.jpg` page data. |
+| Name | Shortcode | Default Value | Description |
+|------|-----------|---------------|-------------|
+| `--url` | `-u` | Required. | URL of comic to save. |
+| `--concurrency` | `-c` | `4` | The number of simultaneous downloads to run. |
+| `--output-dir` | `-o` | `./results/` | Path to directory to save files to. |
+| `--keep-jpg` | `-k` | `false` | Flag to keep/destroy the `.jpg` page data. |
 
 ## License
 MIT.
