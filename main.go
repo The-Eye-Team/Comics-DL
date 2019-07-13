@@ -104,6 +104,7 @@ func log(message ...interface{}) {
 
 func doRequest(urlS string) *http.Response {
 	req, _ := http.NewRequest(http.MethodGet, urlS, strings.NewReader(""))
+	req.Header.Add("User-Agent", "The-Eye-Team/Comics-DL/1.0")
 	res, _ := http.DefaultClient.Do(req)
 	return res
 }
