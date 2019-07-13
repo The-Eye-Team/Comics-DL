@@ -21,6 +21,7 @@ const (
 	s01Host = "readcomicsonline.ru"
 	s02Host = "www.tsumino.com"
 	s03Host = "e-hentai.org"
+	s04Host = "myreadingmanga.info"
 )
 
 var (
@@ -77,6 +78,9 @@ func main() {
 	case s03Host:
 		outputDir += s03Host
 		s03GetComic(strings.Split(urlO.Path, "/")[2], urlO.Path)
+	case s04Host:
+		outputDir += s04Host
+		s04GetComic(strings.Split(urlO.Path, "/")[1])
 	default:
 		log("Site not supported!")
 		return
