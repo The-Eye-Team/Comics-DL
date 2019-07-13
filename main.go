@@ -139,3 +139,17 @@ func packCbzArchive(dirIn string, fileOut string) {
 		os.RemoveAll(dirIn)
 	}
 }
+
+func fixTitleForFilename(t string) string {
+	n := trim(t)
+	n = strings.Replace(n, ":", "", -1)
+	n = strings.Replace(n, "\\", "-", -1)
+	n = strings.Replace(n, "/", "-", -1)
+	n = strings.Replace(n, "*", "-", -1)
+	n = strings.Replace(n, "?", "-", -1)
+	n = strings.Replace(n, "\"", "-", -1)
+	n = strings.Replace(n, "<", "-", -1)
+	n = strings.Replace(n, ">", "-", -1)
+	n = strings.Replace(n, "|", "-", -1)
+	return n
+}

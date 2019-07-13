@@ -15,9 +15,7 @@ func s03GetComic(id string, path string) {
 
 	d := getDoc("https://" + s03Host + path + "?p=0")
 	g := d.Find(".ptds").Eq(0).Parent().Children().Length() - 2
-	n := trim(d.Find("#gn").Text())
-	n = id + " -- " + n
-	n = strings.Replace(n, "|", "-", -1)
+	n := fixTitleForFilename(id + " -- " + trim(d.Find("#gn").Text()))
 	f := 0
 
 	log("Preparing...")
