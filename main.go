@@ -106,7 +106,7 @@ func doesFileExist(file string) bool {
 }
 
 func log(message ...interface{}) {
-	fmt.Print("[" + time.Now().UTC().String()[0:19] + "] ")
+	fmt.Print("[" + time.Now().UTC().String()[5:19] + "] ")
 	fmt.Println(message...)
 }
 
