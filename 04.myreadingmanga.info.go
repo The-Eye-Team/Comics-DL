@@ -8,13 +8,13 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-func s04GetComic(id string) {
+func s04GetComic(host string, id string, path string) {
 	log("Saving comic: myreadingmanga.info /", id)
 
 	from := 0
 	n := ""
 	for i := 1; true; i++ {
-		t, o := s04GetComicList(id, i, from)
+		t, o := s04GetComicList(host, id, i, from)
 		if n == "" {
 			n = o
 		}
@@ -34,8 +34,8 @@ func s04GetComic(id string) {
 	packCbzArchive(dir1, finp)
 }
 
-func s04GetComicList(id string, page int, from int) (int, string) {
-	d := getDoc(F("https://%s/%s/%d/", s04Host, id, page))
+func s04GetComicList(host string, id string, page int, from int) (int, string) {
+	d := getDoc(F("https://%s/%s/%d/", host, id, page))
 	n := fixTitleForFilename(d.Find("h1.entry-title").Text())
 
 	dir2 := outputDir + "/cbz/"

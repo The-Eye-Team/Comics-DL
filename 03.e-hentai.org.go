@@ -10,10 +10,10 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-func s03GetComic(id string, path string) {
+func s03GetComic(host string, id string, path string) {
 	log("Saving comic: e-hentai.org /", path)
 
-	d := getDoc("https://" + s03Host + path + "?p=0")
+	d := getDoc("https://" + host + path + "?p=0")
 	g := d.Find(".ptds").Eq(0).Parent().Children().Length() - 2
 	n := fixTitleForFilename(id + " -- " + trim(d.Find("#gn").Text()))
 	f := 0
@@ -28,7 +28,7 @@ func s03GetComic(id string, path string) {
 
 	for i := 1; i < g; i++ {
 		is := strconv.FormatInt(int64(i), 10)
-		gd := getDoc("https://" + s03Host + path + "?p=" + is)
+		gd := getDoc("https://" + host + path + "?p=" + is)
 		f += s03GetListPage(id, gd, f)
 	}
 

@@ -10,10 +10,10 @@ import (
 	"github.com/valyala/fastjson"
 )
 
-func s02GetComic(id string) {
+func s02GetComic(host string, id string, path string) {
 	log("Saving comic: tsumino.com /", id)
 
-	d := getDoc("https://" + s02Host + "/Book/Info/" + id)
+	d := getDoc("https://" + host + "/Book/Info/" + id)
 
 	n0 := trim(d.Find("#Title").Text())
 	n1 := strings.Split(n0, " / ")[0]

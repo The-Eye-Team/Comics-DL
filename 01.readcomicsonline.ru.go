@@ -9,8 +9,8 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-func s01GetComic(id string) {
-	d := getDoc("https://" + s01Host + "/comic/" + id)
+func s01GetComic(host string, id string, path string) {
+	d := getDoc("https://" + host + "/comic/" + id)
 	s := d.Find("ul.chapters li")
 	n := fixTitleForFilename(trim(d.Find("h2.listmanga-header").Eq(0).Text()))
 	log("Found", s.Length(), "issues of", n)

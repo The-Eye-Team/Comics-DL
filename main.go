@@ -17,11 +17,19 @@ import (
 	flag "github.com/spf13/pflag"
 )
 
-const (
-	s01Host = "readcomicsonline.ru"
-	s02Host = "www.tsumino.com"
-	s03Host = "e-hentai.org"
-	s04Host = "myreadingmanga.info"
+type HostStr struct {
+	hostname     string
+	idPathIndex  int
+	downloadFunc func(string, string, string)
+}
+
+var (
+	hosts = []HostStr{
+		{"readcomicsonline.ru", 2, s01GetComic},
+		{"www.tsumino.com", 3, s02GetComic},
+		{"e-hentai.org", 2, s03GetComic},
+		{"myreadingmanga.info", 1, s04GetComic},
+	}
 )
 
 var (
@@ -68,20 +76,16 @@ func main() {
 		return
 	}
 
-	switch urlO.Host {
-	case s01Host:
-		outputDir += s01Host
-		s01GetComic(strings.Split(urlO.Path, "/")[2])
-	case s02Host:
-		outputDir += s02Host
-		s02GetComic(strings.Split(urlO.Path, "/")[3])
-	case s03Host:
-		outputDir += s03Host
-		s03GetComic(strings.Split(urlO.Path, "/")[2], urlO.Path)
-	case s04Host:
-		outputDir += s04Host
-		s04GetComic(strings.Split(urlO.Path, "/")[1])
-	default:
+	loaded := false
+	for _, h := range hosts {
+		if urlO.Host == h.hostname {
+			outputDir += h.hostname
+			h.downloadFunc(h.hostname, strings.Split(urlO.Path, "/")[h.idPathIndex], urlO.Path)
+			loaded = true
+			break
+		}
+	}
+	if !loaded {
 		log("Site not supported!")
 		return
 	}
