@@ -63,7 +63,7 @@ func doSite(place *url.URL) {
 		log("Site not supported!")
 		return
 	}
-	h.downloadFunc(place.Host, strings.Split(place.Path, "/")[h.idPathIndex], place.Path)
+	go h.downloadFunc(wg, bar, place.Host, strings.Split(place.Path, "/")[h.idPathIndex], place.Path)
 }
 
 func getDoc(urlS string) *goquery.Document {
