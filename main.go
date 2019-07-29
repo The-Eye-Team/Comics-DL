@@ -54,13 +54,16 @@ func main() {
 		log("URL parse error. Aborting!")
 		return
 	}
+	doSite(urlO)
+}
 
-	h, ok := hosts[urlO.Host]
+func doSite(place *url.URL) {
+	h, ok := hosts[place.Host]
 	if !ok {
 		log("Site not supported!")
 		return
 	}
-	h.downloadFunc(urlO.Host, strings.Split(urlO.Path, "/")[h.idPathIndex], urlO.Path)
+	h.downloadFunc(place.Host, strings.Split(place.Path, "/")[h.idPathIndex], place.Path)
 }
 
 func getDoc(urlS string) *goquery.Document {
