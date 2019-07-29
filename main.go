@@ -24,7 +24,7 @@ type HostVal struct {
 var (
 	hosts     = map[string]HostVal{}
 	outputDir string
-	waitgroup *sync.WaitGroup
+	waitgroup = new(sync.WaitGroup)
 	concurr   int
 	count     int
 	keepJpg   bool
@@ -45,10 +45,6 @@ func main() {
 	log("Saving all files to", outputDir)
 
 	concurr = *flagConcur
-
-	wg := sync.WaitGroup{}
-	waitgroup = &wg
-
 	keepJpg = *flagKeepJpg
 
 	//
