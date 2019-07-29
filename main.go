@@ -31,7 +31,6 @@ var (
 )
 
 func main() {
-	flagComicID := flag.String("comic-id", "", "readcomicsonline.ru comic ID")
 	flagConcur := flag.IntP("concurrency", "c", 4, "The number of files to download simultaneously.")
 	flagOutDir := flag.StringP("output-dir", "o", "./results", "Output directory")
 	flagKeepJpg := flag.BoolP("keep-jpg", "k", false, "Flag to keep/delete .jpg files of individual pages.")
@@ -51,12 +50,6 @@ func main() {
 	waitgroup = &wg
 
 	keepJpg = *flagKeepJpg
-
-	//
-
-	if len(*flagComicID) > 0 {
-		*flagURL = "https://readcomicsonline.ru/comic/" + *flagComicID
-	}
 
 	//
 
