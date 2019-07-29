@@ -9,6 +9,10 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+func init() {
+	hosts["readcomicsonline.ru"] = HostVal{2, s01GetComic}
+}
+
 func s01GetComic(host string, id string, path string) {
 	d := getDoc("https://" + host + "/comic/" + id)
 	s := d.Find("ul.chapters li")

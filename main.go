@@ -13,30 +13,20 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
-
 	flag "github.com/spf13/pflag"
 )
 
-type HostStr struct {
-	hostname     string
+type HostVal struct {
 	idPathIndex  int
 	downloadFunc func(string, string, string)
 }
 
 var (
-	hosts = []HostStr{
-		{"readcomicsonline.ru", 2, s01GetComic},
-		{"www.tsumino.com", 3, s02GetComic},
-		{"e-hentai.org", 2, s03GetComic},
-		{"myreadingmanga.info", 1, s04GetComic},
-	}
-)
-
-var (
+	hosts     = map[string]HostVal{}
 	outputDir string
 	waitgroup *sync.WaitGroup
 	concurr   int
-	count     = 0
+	count     int
 	keepJpg   bool
 )
 
@@ -76,19 +66,12 @@ func main() {
 		return
 	}
 
-	loaded := false
-	for _, h := range hosts {
-		if urlO.Host == h.hostname {
-			outputDir += h.hostname
-			h.downloadFunc(h.hostname, strings.Split(urlO.Path, "/")[h.idPathIndex], urlO.Path)
-			loaded = true
-			break
-		}
-	}
-	if !loaded {
+	h, ok := hosts[urlO.Host]
+	if !ok {
 		log("Site not supported!")
 		return
 	}
+	h.downloadFunc(urlO.Host, strings.Split(urlO.Path, "/")[h.idPathIndex], urlO.Path)
 }
 
 func getDoc(urlS string) *goquery.Document {

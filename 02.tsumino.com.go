@@ -10,6 +10,10 @@ import (
 	"github.com/valyala/fastjson"
 )
 
+func init() {
+	hosts["tsumino.com"] = HostVal{3, s02GetComic}
+}
+
 func s02GetComic(host string, id string, path string) {
 	log("Saving comic: tsumino.com /", id)
 

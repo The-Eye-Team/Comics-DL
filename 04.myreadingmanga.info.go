@@ -8,6 +8,10 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+func init() {
+	hosts["myreadingmanga.info"] = HostVal{1, s04GetComic}
+}
+
 func s04GetComic(host string, id string, path string) {
 	log("Saving comic: myreadingmanga.info /", id)
 

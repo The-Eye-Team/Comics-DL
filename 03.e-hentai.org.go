@@ -10,6 +10,10 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+func init() {
+	hosts["e-hentai.org"] = HostVal{2, s03GetComic}
+}
+
 func s03GetComic(host string, id string, path string) {
 	log("Saving comic: e-hentai.org /", path)
 
