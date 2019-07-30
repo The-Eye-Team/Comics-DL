@@ -31,7 +31,6 @@ func s04GetComic(host string, id string, path string) {
 		from += t
 	}
 
-	log(F("Packing archive.."))
 	dir1 := fmt.Sprintf("%s/jpg/%s/", outputDir, id)
 	dir2 := fmt.Sprintf("%s/cbz/", outputDir)
 	finp := dir2 + n + ".cbz"
@@ -73,7 +72,6 @@ func s04GetComicList(host string, id string, page int, from int) (int, string) {
 			return
 		}
 		f++
-		log("Downloading page", f)
 		u, ex := el.Children().Eq(0).Attr("data-lazy-src")
 		if !ex {
 			return

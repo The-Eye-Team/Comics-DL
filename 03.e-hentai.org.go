@@ -22,8 +22,6 @@ func s03GetComic(host string, id string, path string) {
 	n := fixTitleForFilename(id + " -- " + trim(d.Find("#gn").Text()))
 	f := 0
 
-	log("Preparing...")
-
 	lp := s03GetListPage(id, d, f)
 	if lp == -1 {
 		return
@@ -36,13 +34,10 @@ func s03GetComic(host string, id string, path string) {
 		f += s03GetListPage(id, gd, f)
 	}
 
-	log(F("Packing archive.."))
 	dir1 := fmt.Sprintf("%s/jpg/%s/", outputDir, n)
 	dir2 := fmt.Sprintf("%s/cbz/", outputDir)
 	finp := dir2 + n + ".cbz"
 	packCbzArchive(dir1, finp)
-
-	log("Completed.")
 }
 
 func s03GetListPage(id string, d *goquery.Document, from int) int {
@@ -52,14 +47,11 @@ func s03GetListPage(id string, d *goquery.Document, from int) int {
 	n = id + " -- " + n
 	n = strings.Replace(n, "|", "-", -1)
 
-	log(F("Found %d pages in %s", l, n))
-
 	dir2 := fmt.Sprintf("%s/cbz/", outputDir)
 	os.MkdirAll(dir2, os.ModePerm)
 	finp := dir2 + n + ".cbz"
 
 	if doesFileExist(finp) {
-		log("Comic already saved, skipping!")
 		return -1
 	}
 
@@ -68,7 +60,6 @@ func s03GetListPage(id string, d *goquery.Document, from int) int {
 	s.Each(func(i int, el *goquery.Selection) {
 		v, _ := el.Attr("href")
 		fp := fmt.Sprintf("%s%03d.jpg", dir1, from+i)
-		log(F("Downloading Page %d/%d", from+i+1, from+l))
 		s03GetPage(v, fp)
 	})
 
