@@ -61,6 +61,9 @@ func s03GetListPage(id string, d *goquery.Document, from int, b *BarProxy, outpu
 	s.Each(func(i int, el *goquery.Selection) {
 		v, _ := el.Attr("href")
 		fp := fmt.Sprintf("%s%03d.jpg", dir1, from+i)
+		if doesFileExist(fp) {
+			return
+		}
 		s03GetPage(v, fp)
 	})
 
