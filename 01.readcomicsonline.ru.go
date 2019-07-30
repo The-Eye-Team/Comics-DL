@@ -24,21 +24,8 @@ func s01GetComic(b *BarProxy, host string, id string, path string, outputDir str
 		is1 := strings.Split(is0, "/")
 		is2 := is1[len(is1)-1]
 		is3, _ := url.ParseQuery("x=" + is2)
-		waitgroup.Add(1)
-		count++
 		go s01GetIssue(id, n, is3["x"][0], b, outputDir)
-		if count == concurr {
-			waitgroup.Wait()
-		}
 	})
-	waitgroup.Wait()
-
-	if !keepJpg {
-		di := F(outputDir+"/jpg/%s/", n)
-		if doesDirectoryExist(di) {
-			os.RemoveAll(di)
-		}
-	}
 }
 
 func s01GetIssue(id string, name string, issue string, b *BarProxy, outputDir string) {
@@ -62,9 +49,6 @@ func s01GetIssue(id string, name string, issue string, b *BarProxy, outputDir st
 			bys, _ := ioutil.ReadAll(res.Body)
 			ioutil.WriteFile(pth, bys, os.ModePerm)
 		}
-		//
 		packCbzArchive(dir, finp, b)
 	}
-	count--
-	waitgroup.Done()
 }

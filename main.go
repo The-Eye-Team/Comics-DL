@@ -24,12 +24,9 @@ type HostVal struct {
 }
 
 var (
-	hosts     = map[string]HostVal{}
-	rootDir   string
-	waitgroup = new(sync.WaitGroup)
-	concurr   int
-	count     int
-	keepJpg   bool
+	hosts   = map[string]HostVal{}
+	rootDir string
+	keepJpg bool
 )
 
 var (
