@@ -23,8 +23,10 @@ func s03GetComic(wg *sync.WaitGroup, b *BarProxy, host string, id string, path s
 	n := fixTitleForFilename(id + " -- " + trim(d.Find("#gn").Text()))
 	f := 0
 
+	b.AddToTotal(1)
 	lp := s03GetListPage(id, d, f, b, outputDir)
 	if lp == -1 {
+		b.FinishNow()
 		return
 	}
 	f += lp
@@ -58,7 +60,10 @@ func s03GetListPage(id string, d *goquery.Document, from int, b *BarProxy, outpu
 
 	dir1 := fmt.Sprintf("%s/jpg/%s/", outputDir, n)
 	os.MkdirAll(dir1, os.ModePerm)
+
+	b.AddToTotal(l)
 	s.Each(func(i int, el *goquery.Selection) {
+		defer b.Increment(1)
 		v, _ := el.Attr("href")
 		fp := fmt.Sprintf("%s%03d.jpg", dir1, from+i)
 		if doesFileExist(fp) {
