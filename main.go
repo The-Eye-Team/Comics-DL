@@ -37,8 +37,6 @@ func main() {
 	flagURL := flag.StringP("url", "u", "", "URL of comic to download.")
 	flag.Parse()
 
-	//
-
 	outputDir, _ = filepath.Abs(*flagOutDir)
 	outputDir = strings.Replace(outputDir, string(filepath.Separator), "/", -1)
 	outputDir += "/"
@@ -46,8 +44,6 @@ func main() {
 
 	concurr = *flagConcur
 	keepJpg = *flagKeepJpg
-
-	//
 
 	urlO, err := url.Parse(*flagURL)
 	if err != nil {
@@ -118,7 +114,6 @@ func packCbzArchive(dirIn string, fileOut string) {
 		zw.Write(bs)
 	}
 	outz.Close()
-
 	if !keepJpg {
 		os.RemoveAll(dirIn)
 	}
