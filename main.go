@@ -2,6 +2,7 @@ package main
 
 import (
 	"archive/zip"
+	"bufio"
 	"context"
 	"fmt"
 	"io/ioutil"
@@ -45,6 +46,7 @@ func main() {
 	flagOutDir := flag.StringP("output-dir", "o", "./results", "Output directory")
 	flagKeepJpg := flag.BoolP("keep-jpg", "k", false, "Flag to keep/delete .jpg files of individual pages.")
 	flagURL := flag.StringP("url", "u", "", "URL of comic to download.")
+	flagFile := flag.StringP("file", "f", "", "Path to txt file with list of links to download.")
 	flag.Parse()
 
 	outDir, _ := filepath.Abs(*flagOutDir)
@@ -62,6 +64,25 @@ func main() {
 			return
 		}
 		doSite(urlO)
+	}
+
+	if len(*flagFile) > 0 {
+		if !doesFileExist(*flagFile) {
+			log("Unable to reach file!")
+			return
+		}
+		pth, _ := filepath.Abs(*flagFile)
+		file, _ := os.Open(pth)
+		scan := bufio.NewScanner(file)
+
+		for scan.Scan() {
+			line := scan.Text()
+			urlO, err := url.Parse(line)
+			if err != nil {
+				return
+			}
+			doSite(urlO)
+		}
 	}
 
 	progress.Wait()

@@ -26,6 +26,7 @@ go get -u github.com/The-Eye-Team/Comics-DL
 | `-c` | `--concurrency` | `4` | The number of simultaneous downloads to run. |
 | `-o` | `--output-dir` | `./results/` | Path to directory to save files to. |
 | `-k` | `--keep-jpg` | `false` | Flag to keep/destroy the `.jpg` page data. |
+| `-f` | `--file` | None. | Path to file with list of URLs to download. |
 
 ## License
 MIT.
