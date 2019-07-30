@@ -17,6 +17,7 @@ import (
 	flag "github.com/spf13/pflag"
 	"github.com/vbauerster/mpb"
 	"github.com/vbauerster/mpb/decor"
+
 	"golang.org/x/sync/semaphore"
 )
 
