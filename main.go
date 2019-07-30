@@ -32,7 +32,6 @@ var (
 var (
 	doneWg    = new(sync.WaitGroup)
 	progress  = mpb.New(mpb.WithWidth(64), mpb.WithWaitGroup(doneWg))
-	bars      []*BarProxy
 	taskIndex = 1
 )
 
@@ -48,7 +47,6 @@ func main() {
 	outDir += "/"
 	rootDir = outDir
 
-	concurr = *flagConcur
 	keepJpg = *flagKeepJpg
 
 	if len(*flagURL) > 0 {
@@ -72,7 +70,6 @@ func doSite(place *url.URL) {
 
 	job := strings.Split(place.Path, "/")[h.idPathIndex]
 	bar := createBar(job)
-	bars = append(bars, &bar)
 	go h.downloadFunc(&bar, place.Host, job, place.Path, rootDir+place.Host)
 }
 
