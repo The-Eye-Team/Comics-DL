@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"sync"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -13,7 +14,9 @@ func init() {
 	hosts["readcomicsonline.ru"] = HostVal{2, s01GetComic}
 }
 
-func s01GetComic(host string, id string, path string) {
+func s01GetComic(wg *sync.WaitGroup, b *BarProxy, host string, id string, path string, outputDir string) {
+	defer wg.Done()
+
 	d := getDoc("https://" + host + "/comic/" + id)
 	s := d.Find("ul.chapters li")
 	n := fixTitleForFilename(trim(d.Find("h2.listmanga-header").Eq(0).Text()))
@@ -25,7 +28,7 @@ func s01GetComic(host string, id string, path string) {
 		is3, _ := url.ParseQuery("x=" + is2)
 		waitgroup.Add(1)
 		count++
-		go s01GetIssue(id, n, is3["x"][0])
+		go s01GetIssue(id, n, is3["x"][0], b, outputDir)
 		if count == concurr {
 			waitgroup.Wait()
 		}
@@ -40,7 +43,7 @@ func s01GetComic(host string, id string, path string) {
 	}
 }
 
-func s01GetIssue(id string, name string, issue string) {
+func s01GetIssue(id string, name string, issue string, b *BarProxy, outputDir string) {
 	dir2 := F(outputDir+"/cbz/%s/", name)
 	os.MkdirAll(dir2, os.ModePerm)
 	finp := F("%sIssue %s.cbz", dir2, issue)
@@ -62,7 +65,7 @@ func s01GetIssue(id string, name string, issue string) {
 			ioutil.WriteFile(pth, bys, os.ModePerm)
 		}
 		//
-		packCbzArchive(dir, finp)
+		packCbzArchive(dir, finp, b)
 	}
 	count--
 	waitgroup.Done()

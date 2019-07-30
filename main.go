@@ -14,20 +14,29 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	flag "github.com/spf13/pflag"
+	"github.com/vbauerster/mpb"
+	"github.com/vbauerster/mpb/decor"
 )
 
 type HostVal struct {
 	idPathIndex  int
-	downloadFunc func(string, string, string)
+	downloadFunc func(*sync.WaitGroup, *BarProxy, string, string, string, string)
 }
 
 var (
 	hosts     = map[string]HostVal{}
-	outputDir string
+	rootDir   string
 	waitgroup = new(sync.WaitGroup)
 	concurr   int
 	count     int
 	keepJpg   bool
+)
+
+var (
+	doneWg    = new(sync.WaitGroup)
+	progress  = mpb.New(mpb.WithWidth(64), mpb.WithWaitGroup(doneWg))
+	bars      []*BarProxy
+	taskIndex = 1
 )
 
 func main() {
@@ -37,10 +46,10 @@ func main() {
 	flagURL := flag.StringP("url", "u", "", "URL of comic to download.")
 	flag.Parse()
 
-	outputDir, _ = filepath.Abs(*flagOutDir)
-	outputDir = strings.Replace(outputDir, string(filepath.Separator), "/", -1)
-	outputDir += "/"
-	log("Saving all files to", outputDir)
+	outDir, _ := filepath.Abs(*flagOutDir)
+	outDir = strings.Replace(outDir, string(filepath.Separator), "/", -1)
+	outDir += "/"
+	rootDir = outDir
 
 	concurr = *flagConcur
 	keepJpg = *flagKeepJpg
@@ -53,6 +62,8 @@ func main() {
 		}
 		doSite(urlO)
 	}
+
+	progress.Wait()
 }
 
 func doSite(place *url.URL) {
@@ -61,7 +72,31 @@ func doSite(place *url.URL) {
 		log("Site not supported!")
 		return
 	}
-	go h.downloadFunc(wg, bar, place.Host, strings.Split(place.Path, "/")[h.idPathIndex], place.Path)
+
+	wg := new(sync.WaitGroup)
+	wg.Add(1)
+	job := strings.Split(place.Path, "/")[h.idPathIndex]
+	bar := createBar(job)
+	go h.downloadFunc(wg, &bar, place.Host, job, place.Path, rootDir+place.Host)
+	bars = append(bars, &bar)
+}
+
+func createBar(name string) BarProxy {
+	task := fmt.Sprintf("Task #%d:", taskIndex)
+	taskIndex++
+	return BarProxy{
+		0,
+		progress.AddBar(0,
+			mpb.PrependDecorators(
+				decor.Name(task, decor.WC{W: len(task) + 1, C: decor.DidentRight}),
+				decor.Name(name, decor.WCSyncSpaceR),
+				decor.CountersNoUnit("%d / %d", decor.WCSyncWidth),
+			),
+			mpb.AppendDecorators(
+				decor.OnComplete(decor.Percentage(decor.WC{W: 5}), ""),
+			),
+		),
+	}
 }
 
 func getDoc(urlS string) *goquery.Document {
@@ -106,7 +141,7 @@ func F(format string, args ...interface{}) string {
 	return fmt.Sprintf(format, args...)
 }
 
-func packCbzArchive(dirIn string, fileOut string) {
+func packCbzArchive(dirIn string, fileOut string, bar *BarProxy) {
 	outf, _ := os.Create(fileOut)
 	outz := zip.NewWriter(outf)
 	files, _ := ioutil.ReadDir(dirIn)
@@ -119,6 +154,7 @@ func packCbzArchive(dirIn string, fileOut string) {
 	if !keepJpg {
 		os.RemoveAll(dirIn)
 	}
+	bar.Increment(1)
 }
 
 func fixTitleForFilename(t string) string {

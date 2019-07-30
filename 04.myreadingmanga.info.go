@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"sync"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -12,13 +13,13 @@ func init() {
 	hosts["myreadingmanga.info"] = HostVal{1, s04GetComic}
 }
 
-func s04GetComic(host string, id string, path string) {
-	log("Saving comic: myreadingmanga.info /", id)
+func s04GetComic(wg *sync.WaitGroup, b *BarProxy, host string, id string, path string, outputDir string) {
+	defer wg.Done()
 
 	from := 0
 	n := ""
 	for i := 1; true; i++ {
-		t, o := s04GetComicList(host, id, i, from)
+		t, o := s04GetComicList(host, id, i, from, outputDir)
 		if n == "" {
 			n = o
 		}
@@ -34,10 +35,10 @@ func s04GetComic(host string, id string, path string) {
 	dir1 := fmt.Sprintf("%s/jpg/%s/", outputDir, id)
 	dir2 := fmt.Sprintf("%s/cbz/", outputDir)
 	finp := dir2 + n + ".cbz"
-	packCbzArchive(dir1, finp)
+	packCbzArchive(dir1, finp, b)
 }
 
-func s04GetComicList(host string, id string, page int, from int) (int, string) {
+func s04GetComicList(host string, id string, page int, from int, outputDir string) (int, string) {
 	d := getDoc(F("https://%s/%s/%d/", host, id, page))
 	n := fixTitleForFilename(d.Find("h1.entry-title").Text())
 

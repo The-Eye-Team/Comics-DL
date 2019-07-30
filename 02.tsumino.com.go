@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"sync"
 
 	"github.com/valyala/fastjson"
 )
@@ -14,8 +15,8 @@ func init() {
 	hosts["tsumino.com"] = HostVal{3, s02GetComic}
 }
 
-func s02GetComic(host string, id string, path string) {
-	log("Saving comic: tsumino.com /", id)
+func s02GetComic(wg *sync.WaitGroup, b *BarProxy, host string, id string, path string, outputDir string) {
+	defer wg.Done()
 
 	d := getDoc("https://" + host + "/Book/Info/" + id)
 
@@ -48,7 +49,7 @@ func s02GetComic(host string, id string, path string) {
 				ioutil.WriteFile(pth, bys, os.ModePerm)
 			}
 
-			packCbzArchive(dir, finp)
+			packCbzArchive(dir, finp, b)
 		}
 	}
 }
