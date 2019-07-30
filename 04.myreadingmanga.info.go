@@ -15,14 +15,16 @@ func init() {
 func s04GetComic(b *BarProxy, host string, id string, path string, outputDir string) {
 	defer guard.Release(1)
 
+	b.AddToTotal(1)
 	from := 0
 	n := ""
 	for i := 1; true; i++ {
-		t, o := s04GetComicList(host, id, i, from, outputDir)
+		t, o := s04GetComicList(host, id, i, from, outputDir, b)
 		if n == "" {
 			n = o
 		}
 		if t == -2 {
+			b.FinishNow()
 			return
 		}
 		if t == -1 {
@@ -35,9 +37,10 @@ func s04GetComic(b *BarProxy, host string, id string, path string, outputDir str
 	dir2 := fmt.Sprintf("%s/cbz/", outputDir)
 	finp := dir2 + n + ".cbz"
 	packCbzArchive(dir1, finp, b)
+	b.FinishNow()
 }
 
-func s04GetComicList(host string, id string, page int, from int, outputDir string) (int, string) {
+func s04GetComicList(host string, id string, page int, from int, outputDir string, b *BarProxy) (int, string) {
 	d := getDoc(F("https://%s/%s/%d/", host, id, page))
 	n := fixTitleForFilename(d.Find("h1.entry-title").Text())
 
@@ -56,7 +59,9 @@ func s04GetComicList(host string, id string, page int, from int, outputDir strin
 	e := false
 	p := g.Length()
 	f := from
+	b.AddToTotal(p)
 	g.Each(func(i int, el *goquery.Selection) {
+		defer b.Increment(1)
 		cl, o := el.Attr("class")
 		if o && cl == "entry-pagination" {
 			p--
