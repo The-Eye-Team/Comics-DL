@@ -75,11 +75,11 @@ func doSite(place *url.URL) {
 	}
 
 	job := strings.Split(place.Path, "/")[h.idPathIndex]
-	bar := createBar(job)
+	bar := createBar(place.Host, job)
 	go h.downloadFunc(&bar, place.Host, job, place.Path, rootDir+place.Host)
 }
 
-func createBar(name string) BarProxy {
+func createBar(host string, name string) BarProxy {
 	guard.Acquire(ctx, 1)
 	task := fmt.Sprintf("Task #%d:", taskIndex)
 	taskIndex++
@@ -88,6 +88,7 @@ func createBar(name string) BarProxy {
 		progress.AddBar(0,
 			mpb.PrependDecorators(
 				decor.Name(task, decor.WC{W: len(task) + 1, C: decor.DidentRight}),
+				decor.Name(host, decor.WCSyncSpaceR),
 				decor.Name(name, decor.WCSyncSpaceR),
 				decor.Name(": ", decor.WC{W: 2}),
 				decor.CountersNoUnit("%d / %d", decor.WCSyncWidth),

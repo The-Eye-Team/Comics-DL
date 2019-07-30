@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"net/url"
 	"os"
@@ -33,7 +32,7 @@ func s01GetComic(b *BarProxy, host string, id string, path string, outputDir str
 
 func s01GetIssue(id string, name string, issue string, b *BarProxy, outputDir string) {
 	defer guard.Release(1)
-	bs := createBar(fmt.Sprintf("%s #%s", name, issue))
+	bs := createBar("readcomicsonline.ru", F("%s #%s", id, issue))
 	dir2 := F(outputDir+"/cbz/%s/", name)
 	os.MkdirAll(dir2, os.ModePerm)
 	finp := F("%sIssue %s.cbz", dir2, issue)
