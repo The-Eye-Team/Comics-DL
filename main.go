@@ -82,6 +82,7 @@ func createBar(name string) BarProxy {
 			mpb.PrependDecorators(
 				decor.Name(task, decor.WC{W: len(task) + 1, C: decor.DidentRight}),
 				decor.Name(name, decor.WCSyncSpaceR),
+				decor.Name(": ", decor.WC{W: 2}),
 				decor.CountersNoUnit("%d / %d", decor.WCSyncWidth),
 			),
 			mpb.AppendDecorators(
