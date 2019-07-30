@@ -45,12 +45,14 @@ func main() {
 	concurr = *flagConcur
 	keepJpg = *flagKeepJpg
 
-	urlO, err := url.Parse(*flagURL)
-	if err != nil {
-		log("URL parse error. Aborting!")
-		return
+	if len(*flagURL) > 0 {
+		urlO, err := url.Parse(*flagURL)
+		if err != nil {
+			log("URL parse error. Aborting!")
+			return
+		}
+		doSite(urlO)
 	}
-	doSite(urlO)
 }
 
 func doSite(place *url.URL) {
