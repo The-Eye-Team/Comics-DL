@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 	"strconv"
@@ -36,8 +35,8 @@ func s03GetComic(b *BarProxy, host string, id string, path string, outputDir str
 		f += s03GetListPage(id, gd, f, b, outputDir)
 	}
 
-	dir1 := fmt.Sprintf("%s/jpg/%s/", outputDir, n)
-	dir2 := fmt.Sprintf("%s/cbz/", outputDir)
+	dir1 := F("%s/jpg/%s/", outputDir, n)
+	dir2 := F("%s/cbz/", outputDir)
 	finp := dir2 + n + ".cbz"
 	packCbzArchive(dir1, finp, b)
 }
@@ -49,7 +48,7 @@ func s03GetListPage(id string, d *goquery.Document, from int, b *BarProxy, outpu
 	n = id + " -- " + n
 	n = strings.Replace(n, "|", "-", -1)
 
-	dir2 := fmt.Sprintf("%s/cbz/", outputDir)
+	dir2 := F("%s/cbz/", outputDir)
 	os.MkdirAll(dir2, os.ModePerm)
 	finp := dir2 + n + ".cbz"
 
@@ -57,14 +56,14 @@ func s03GetListPage(id string, d *goquery.Document, from int, b *BarProxy, outpu
 		return -1
 	}
 
-	dir1 := fmt.Sprintf("%s/jpg/%s/", outputDir, n)
+	dir1 := F("%s/jpg/%s/", outputDir, n)
 	os.MkdirAll(dir1, os.ModePerm)
 
 	b.AddToTotal(l)
 	s.Each(func(i int, el *goquery.Selection) {
 		defer b.Increment(1)
 		v, _ := el.Attr("href")
-		fp := fmt.Sprintf("%s%03d.jpg", dir1, from+i)
+		fp := F("%s%03d.jpg", dir1, from+i)
 		if doesFileExist(fp) {
 			return
 		}

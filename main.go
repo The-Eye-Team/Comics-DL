@@ -81,7 +81,7 @@ func doSite(place *url.URL) {
 
 func createBar(host string, name string) BarProxy {
 	guard.Acquire(ctx, 1)
-	task := fmt.Sprintf("Task #%d:", taskIndex)
+	task := F("Task #%d:", taskIndex)
 	taskIndex++
 	return BarProxy{
 		0,

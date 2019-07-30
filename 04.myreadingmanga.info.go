@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 
@@ -33,8 +32,8 @@ func s04GetComic(b *BarProxy, host string, id string, path string, outputDir str
 		from += t
 	}
 
-	dir1 := fmt.Sprintf("%s/jpg/%s/", outputDir, id)
-	dir2 := fmt.Sprintf("%s/cbz/", outputDir)
+	dir1 := F("%s/jpg/%s/", outputDir, id)
+	dir2 := F("%s/cbz/", outputDir)
 	finp := dir2 + n + ".cbz"
 	packCbzArchive(dir1, finp, b)
 	b.FinishNow()
