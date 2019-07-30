@@ -11,7 +11,7 @@ import (
 )
 
 func init() {
-	hosts["tsumino.com"] = HostVal{3, s02GetComic}
+	hosts["www.tsumino.com"] = HostVal{3, s02GetComic}
 }
 
 func s02GetComic(b *BarProxy, host string, id string, path string, outputDir string) {
@@ -28,9 +28,11 @@ func s02GetComic(b *BarProxy, host string, id string, path string, outputDir str
 	os.MkdirAll(dir2, os.ModePerm)
 
 	finp := dir2 + n + ".cbz"
+	b.AddToTotal(1)
 	if !doesFileExist(finp) {
 		images := s02GetPageURLs(id)
 		ln := len(images)
+		b.AddToTotal(ln)
 
 		if ln > 0 {
 			dir := F("%s/jpg/%s/", outputDir, n)
@@ -38,6 +40,7 @@ func s02GetComic(b *BarProxy, host string, id string, path string, outputDir str
 			for i, item := range images {
 				pth := F("%s/jpg/%s/%03d.jpg", outputDir, n, i)
 				if doesFileExist(pth) {
+					b.Increment(1)
 					continue
 				}
 				itm := url.Values{}
@@ -45,11 +48,13 @@ func s02GetComic(b *BarProxy, host string, id string, path string, outputDir str
 				res := doRequest("https://www.tsumino.com/Image/Object?name=" + itm.Encode()[2:])
 				bys, _ := ioutil.ReadAll(res.Body)
 				ioutil.WriteFile(pth, bys, os.ModePerm)
+				b.Increment(1)
 			}
 
 			packCbzArchive(dir, finp, b)
 		}
 	}
+	b.Increment(1)
 }
 
 func s02GetPageURLs(id string) []string {
