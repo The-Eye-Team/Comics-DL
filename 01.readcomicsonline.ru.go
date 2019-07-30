@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/url"
 	"os"
@@ -24,11 +25,13 @@ func s01GetComic(b *BarProxy, host string, id string, path string, outputDir str
 		is1 := strings.Split(is0, "/")
 		is2 := is1[len(is1)-1]
 		is3, _ := url.ParseQuery("x=" + is2)
+		b.AddToTotal(1)
 		go s01GetIssue(id, n, is3["x"][0], b, outputDir)
 	})
 }
 
 func s01GetIssue(id string, name string, issue string, b *BarProxy, outputDir string) {
+	bs := createBar(fmt.Sprintf("%s #%s", name, issue))
 	dir2 := F(outputDir+"/cbz/%s/", name)
 	os.MkdirAll(dir2, os.ModePerm)
 	finp := F("%sIssue %s.cbz", dir2, issue)
@@ -36,11 +39,13 @@ func s01GetIssue(id string, name string, issue string, b *BarProxy, outputDir st
 	dir := F(outputDir+"/jpg/%s/Issue %s/", name, issue)
 	if !doesFileExist(finp) {
 		os.MkdirAll(dir, os.ModePerm)
+		bs.AddToTotal(1)
 		for j := 1; true; j++ {
 			pth := F("%s%03d.jpg", dir, j)
 			if doesFileExist(pth) {
 				continue
 			}
+			bs.AddToTotal(1)
 			u := F("https://readcomicsonline.ru/uploads/manga/%s/chapters/%s/%02d.jpg", id, issue, j)
 			res := doRequest(u)
 			if res.StatusCode >= 400 {
@@ -48,7 +53,10 @@ func s01GetIssue(id string, name string, issue string, b *BarProxy, outputDir st
 			}
 			bys, _ := ioutil.ReadAll(res.Body)
 			ioutil.WriteFile(pth, bys, os.ModePerm)
+			bs.Increment(1)
 		}
-		packCbzArchive(dir, finp, b)
+		packCbzArchive(dir, finp, &bs)
 	}
+	bs.FinishNow()
+	b.Increment(1)
 }
