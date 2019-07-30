@@ -15,6 +15,7 @@ func init() {
 }
 
 func s01GetComic(b *BarProxy, host string, id string, path string, outputDir string) {
+	defer guard.Release(1)
 
 	d := getDoc("https://" + host + "/comic/" + id)
 	s := d.Find("ul.chapters li")
@@ -31,6 +32,7 @@ func s01GetComic(b *BarProxy, host string, id string, path string, outputDir str
 }
 
 func s01GetIssue(id string, name string, issue string, b *BarProxy, outputDir string) {
+	defer guard.Release(1)
 	bs := createBar(fmt.Sprintf("%s #%s", name, issue))
 	dir2 := F(outputDir+"/cbz/%s/", name)
 	os.MkdirAll(dir2, os.ModePerm)

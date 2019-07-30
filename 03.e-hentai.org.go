@@ -15,6 +15,7 @@ func init() {
 }
 
 func s03GetComic(b *BarProxy, host string, id string, path string, outputDir string) {
+	defer guard.Release(1)
 
 	d := getDoc("https://" + host + path + "?p=0")
 	g := d.Find(".ptds").Eq(0).Parent().Children().Length() - 2

@@ -2,6 +2,7 @@ package main
 
 import (
 	"archive/zip"
+	"context"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -16,6 +17,7 @@ import (
 	flag "github.com/spf13/pflag"
 	"github.com/vbauerster/mpb"
 	"github.com/vbauerster/mpb/decor"
+	"golang.org/x/sync/semaphore"
 )
 
 type HostVal struct {
@@ -33,6 +35,8 @@ var (
 	doneWg    = new(sync.WaitGroup)
 	progress  = mpb.New(mpb.WithWidth(64), mpb.WithWaitGroup(doneWg))
 	taskIndex = 1
+	guard     *semaphore.Weighted
+	ctx       = context.TODO()
 )
 
 func main() {
@@ -47,6 +51,7 @@ func main() {
 	outDir += "/"
 	rootDir = outDir
 
+	guard = semaphore.NewWeighted(int64(*flagConcur))
 	keepJpg = *flagKeepJpg
 
 	if len(*flagURL) > 0 {
@@ -74,6 +79,7 @@ func doSite(place *url.URL) {
 }
 
 func createBar(name string) BarProxy {
+	guard.Acquire(ctx, 1)
 	task := fmt.Sprintf("Task #%d:", taskIndex)
 	taskIndex++
 	return BarProxy{

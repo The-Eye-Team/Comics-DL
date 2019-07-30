@@ -15,6 +15,7 @@ func init() {
 }
 
 func s02GetComic(b *BarProxy, host string, id string, path string, outputDir string) {
+	defer guard.Release(1)
 
 	d := getDoc("https://" + host + "/Book/Info/" + id)
 	n0 := trim(d.Find("#Title").Text())

@@ -13,6 +13,7 @@ func init() {
 }
 
 func s04GetComic(b *BarProxy, host string, id string, path string, outputDir string) {
+	defer guard.Release(1)
 
 	from := 0
 	n := ""
