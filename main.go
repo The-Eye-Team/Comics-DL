@@ -20,7 +20,7 @@ import (
 
 type HostVal struct {
 	idPathIndex  int
-	downloadFunc func(*sync.WaitGroup, *BarProxy, string, string, string, string)
+	downloadFunc func(*BarProxy, string, string, string, string)
 }
 
 var (
@@ -73,12 +73,10 @@ func doSite(place *url.URL) {
 		return
 	}
 
-	wg := new(sync.WaitGroup)
-	wg.Add(1)
 	job := strings.Split(place.Path, "/")[h.idPathIndex]
 	bar := createBar(job)
-	go h.downloadFunc(wg, &bar, place.Host, job, place.Path, rootDir+place.Host)
 	bars = append(bars, &bar)
+	go h.downloadFunc(&bar, place.Host, job, place.Path, rootDir+place.Host)
 }
 
 func createBar(name string) BarProxy {

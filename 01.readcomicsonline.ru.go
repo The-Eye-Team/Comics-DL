@@ -5,7 +5,6 @@ import (
 	"net/url"
 	"os"
 	"strings"
-	"sync"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -14,8 +13,7 @@ func init() {
 	hosts["readcomicsonline.ru"] = HostVal{2, s01GetComic}
 }
 
-func s01GetComic(wg *sync.WaitGroup, b *BarProxy, host string, id string, path string, outputDir string) {
-	defer wg.Done()
+func s01GetComic(b *BarProxy, host string, id string, path string, outputDir string) {
 
 	d := getDoc("https://" + host + "/comic/" + id)
 	s := d.Find("ul.chapters li")

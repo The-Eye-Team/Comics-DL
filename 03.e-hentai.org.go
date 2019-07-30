@@ -6,7 +6,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"sync"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -15,8 +14,7 @@ func init() {
 	hosts["e-hentai.org"] = HostVal{2, s03GetComic}
 }
 
-func s03GetComic(wg *sync.WaitGroup, b *BarProxy, host string, id string, path string, outputDir string) {
-	defer wg.Done()
+func s03GetComic(b *BarProxy, host string, id string, path string, outputDir string) {
 
 	d := getDoc("https://" + host + path + "?p=0")
 	g := d.Find(".ptds").Eq(0).Parent().Children().Length() - 2

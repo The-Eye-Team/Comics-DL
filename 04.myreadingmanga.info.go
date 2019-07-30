@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"sync"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -13,8 +12,7 @@ func init() {
 	hosts["myreadingmanga.info"] = HostVal{1, s04GetComic}
 }
 
-func s04GetComic(wg *sync.WaitGroup, b *BarProxy, host string, id string, path string, outputDir string) {
-	defer wg.Done()
+func s04GetComic(b *BarProxy, host string, id string, path string, outputDir string) {
 
 	from := 0
 	n := ""

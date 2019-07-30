@@ -6,7 +6,6 @@ import (
 	"net/url"
 	"os"
 	"strings"
-	"sync"
 
 	"github.com/valyala/fastjson"
 )
@@ -15,11 +14,9 @@ func init() {
 	hosts["tsumino.com"] = HostVal{3, s02GetComic}
 }
 
-func s02GetComic(wg *sync.WaitGroup, b *BarProxy, host string, id string, path string, outputDir string) {
-	defer wg.Done()
+func s02GetComic(b *BarProxy, host string, id string, path string, outputDir string) {
 
 	d := getDoc("https://" + host + "/Book/Info/" + id)
-
 	n0 := trim(d.Find("#Title").Text())
 	n1 := strings.Split(n0, " / ")[0]
 	n2 := strings.Replace(n1, " | ", " -- ", -1)
