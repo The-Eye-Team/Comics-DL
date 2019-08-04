@@ -33,7 +33,7 @@ var (
 	keepJpg   bool
 	doneWg    = new(sync.WaitGroup)
 	progress  = mpb.New(mpb.WithWidth(64), mpb.WithWaitGroup(doneWg))
-	taskIndex = 1
+	taskIndex = 0
 	guard     *semaphore.Weighted
 	ctx       = context.TODO()
 	bytesDLd  int64
@@ -102,8 +102,8 @@ func doSite(place *url.URL) {
 
 func createBar(host string, name string) BarProxy {
 	guard.Acquire(ctx, 1)
-	task := F("Task #%d:", taskIndex)
 	taskIndex++
+	task := F("Task #%d:", taskIndex)
 	return BarProxy{
 		0,
 		progress.AddBar(0,
