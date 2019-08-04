@@ -85,7 +85,9 @@ func main() {
 
 	progress.Wait()
 
-	fmt.Println(F("Completed download after %d tasks, and saving %s.", taskIndex, byteCountIEC(bytesDLd)))
+	fmt.Println("Completed download after:")
+	fmt.Println(F("\t%d tasks", taskIndex))
+	fmt.Println(F("\t%s saved", byteCountIEC(bytesDLd)))
 }
 
 func doSite(place *url.URL) {
