@@ -54,37 +54,37 @@ func s04GetComicList(host string, id string, page int, from int, outputDir strin
 	dir1 := outputDir + "/jpg/" + id + "/"
 	os.MkdirAll(dir1, os.ModePerm)
 
-	g := d.Find("div.entry-content div")
+	g := d.Find("div.entry-content img")
 	e := false
 	p := g.Length()
 	f := from
 	b.AddToTotal(p)
 	g.Each(func(i int, el *goquery.Selection) {
 		defer b.Increment(1)
-		cl, o := el.Attr("class")
-		if o && cl == "entry-pagination" {
-			p--
-			e = true
-			if el.Children().Last().Is("span") {
-				e = false
-			}
-			return
-		}
 
 		pfn := F(dir1+"%04d.jpg", f)
 		if doesFileExist(pfn) {
 			return
 		}
 		f++
-		u, ex := el.Children().Eq(0).Attr("data-lazy-src")
+		u, ex := el.Attr("data-lazy-src")
 		if !ex {
 			return
 		}
 		res := doRequest(u)
+		if res == nil {
+			return
+		}
 		bys, _ := ioutil.ReadAll(res.Body)
 		bytesDLd += int64(len(bys))
 		ioutil.WriteFile(pfn, bys, os.ModePerm)
 	})
+	nc1 := d.Find("div.entry-content .entry-pagination")
+	if nc1.Length() > 0 {
+		if nc1.Last().Is("span") {
+			e = true
+		}
+	}
 
 	if e {
 		return p, n
