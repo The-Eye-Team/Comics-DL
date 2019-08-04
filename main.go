@@ -104,6 +104,7 @@ func createBar(host string, name string) BarProxy {
 	return BarProxy{
 		0,
 		progress.AddBar(0,
+			mpb.BarRemoveOnComplete(),
 			mpb.PrependDecorators(
 				decor.Name(task, decor.WC{W: len(task) + 1, C: decor.DidentRight}),
 				decor.Name(host, decor.WCSyncSpaceR),
