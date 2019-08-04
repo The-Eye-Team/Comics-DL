@@ -78,5 +78,6 @@ func s03GetPage(urlS string, fpath string) {
 	s, _ := d.Find("#img").Attr("src")
 	r := doRequest(s)
 	b, _ := ioutil.ReadAll(r.Body)
+	bytesDLd += int64(len(b))
 	ioutil.WriteFile(fpath, b, os.ModePerm)
 }

@@ -36,6 +36,7 @@ var (
 	taskIndex = 1
 	guard     *semaphore.Weighted
 	ctx       = context.TODO()
+	bytesDLd  int64
 )
 
 func main() {
@@ -83,6 +84,8 @@ func main() {
 	}
 
 	progress.Wait()
+
+	fmt.Println(F("Completed download after %d tasks, and saving %s.", taskIndex, byteCountIEC(bytesDLd)))
 }
 
 func doSite(place *url.URL) {
@@ -189,4 +192,20 @@ func fixTitleForFilename(t string) string {
 	n = strings.Replace(n, ">", "-", -1)
 	n = strings.Replace(n, "|", "-", -1)
 	return n
+}
+
+func reduceNumber(input int64, unit int64, base string, prefixes string) string {
+	if input < unit {
+		return F("%d "+base, input)
+	}
+	div, exp := int64(unit), 0
+	for n := input / unit; n >= unit; n /= unit {
+		div *= unit
+		exp++
+	}
+	return F("%.1f %ci", float64(input)/float64(div), prefixes[exp]) + base
+}
+
+func byteCountIEC(b int64) string {
+	return reduceNumber(b, 1024, "B", "KMGTPEZY")
 }

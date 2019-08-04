@@ -47,6 +47,7 @@ func s02GetComic(b *BarProxy, host string, id string, path string, outputDir str
 				itm.Add("v", item)
 				res := doRequest("https://www.tsumino.com/Image/Object?name=" + itm.Encode()[2:])
 				bys, _ := ioutil.ReadAll(res.Body)
+				bytesDLd += int64(len(bys))
 				ioutil.WriteFile(pth, bys, os.ModePerm)
 				b.Increment(1)
 			}

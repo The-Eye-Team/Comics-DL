@@ -82,6 +82,7 @@ func s04GetComicList(host string, id string, page int, from int, outputDir strin
 		}
 		res := doRequest(u)
 		bys, _ := ioutil.ReadAll(res.Body)
+		bytesDLd += int64(len(bys))
 		ioutil.WriteFile(pfn, bys, os.ModePerm)
 	})
 

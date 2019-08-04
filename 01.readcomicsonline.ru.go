@@ -53,6 +53,7 @@ func s01GetIssue(id string, name string, issue string, b *BarProxy, outputDir st
 				break
 			}
 			bys, _ := ioutil.ReadAll(res.Body)
+			bytesDLd += int64(len(bys))
 			ioutil.WriteFile(pth, bys, os.ModePerm)
 			bs.Increment(1)
 		}
