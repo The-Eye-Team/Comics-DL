@@ -28,12 +28,9 @@ type HostVal struct {
 }
 
 var (
-	hosts   = map[string]HostVal{}
-	rootDir string
-	keepJpg bool
-)
-
-var (
+	hosts     = map[string]HostVal{}
+	rootDir   string
+	keepJpg   bool
 	doneWg    = new(sync.WaitGroup)
 	progress  = mpb.New(mpb.WithWidth(64), mpb.WithWaitGroup(doneWg))
 	taskIndex = 1
