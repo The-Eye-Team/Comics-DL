@@ -28,6 +28,9 @@ func s01GetComic(b *BarProxy, host string, id string, path string, outputDir str
 		b.AddToTotal(1)
 		go s01GetIssue(id, n, is3["x"][0], b, outputDir)
 	})
+	if s.Length() == 0 {
+		b.FinishNow()
+	}
 }
 
 func s01GetIssue(id string, name string, issue string, b *BarProxy, outputDir string) {
