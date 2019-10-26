@@ -3,7 +3,6 @@ package main
 import (
 	"archive/zip"
 	"bufio"
-	"context"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -15,27 +14,19 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/nektro/go-util/mbpp"
+	"github.com/nektro/go-util/util"
 	flag "github.com/spf13/pflag"
-	"github.com/vbauerster/mpb"
-	"github.com/vbauerster/mpb/decor"
-
-	"golang.org/x/sync/semaphore"
 )
 
 type HostVal struct {
 	idPathIndex  int
-	downloadFunc func(*BarProxy, string, string, string, string)
+	downloadFunc func(string, string, string, string) func(*mbpp.BarProxy, *sync.WaitGroup)
 }
 
 var (
-	hosts     = map[string]HostVal{}
-	keepJpg   bool
-	doneWg    = new(sync.WaitGroup)
-	progress  = mpb.New(mpb.WithWidth(64), mpb.WithWaitGroup(doneWg))
-	taskIndex = 0
-	guard     *semaphore.Weighted
-	ctx       = context.TODO()
-	bytesDLd  int64
+	hosts   = map[string]HostVal{}
+	keepJpg bool
 )
 
 func main() {
@@ -50,7 +41,7 @@ func main() {
 	outDir = strings.Replace(outDir, string(filepath.Separator), "/", -1)
 	outDir += "/"
 
-	guard = semaphore.NewWeighted(int64(*flagConcur))
+	mbpp.Init(*flagConcur)
 	keepJpg = *flagKeepJpg
 
 	if len(*flagURL) > 0 {
@@ -81,45 +72,19 @@ func main() {
 		}
 	}
 
-	progress.Wait()
+	time.Sleep(time.Second / 2)
+	mbpp.Wait()
 
-	fmt.Println("Completed download after:")
-	fmt.Println(F("\t%d tasks", taskIndex))
-	fmt.Println(F("\t%s saved", byteCountIEC(bytesDLd)))
+	fmt.Println("Completed download with", mbpp.GetTaskCount(), "tasks and", util.ByteCountIEC(mbpp.GetTaskDownloadSize()), "bytes.")
 }
 
 func doSite(place *url.URL, rootDir string) {
 	h, ok := hosts[place.Host]
 	if !ok {
-		log("Site not supported!")
 		return
 	}
-
 	job := strings.Split(place.Path, "/")[h.idPathIndex]
-	bar := createBar(place.Host, job)
-	go h.downloadFunc(&bar, place.Host, job, place.Path, rootDir+place.Host)
-}
-
-func createBar(host string, name string) BarProxy {
-	guard.Acquire(ctx, 1)
-	taskIndex++
-	task := F("Task #%d:", taskIndex)
-	return BarProxy{
-		0,
-		progress.AddBar(0,
-			mpb.BarRemoveOnComplete(),
-			mpb.PrependDecorators(
-				decor.Name(task, decor.WC{W: len(task) + 1, C: decor.DidentRight}),
-				decor.Name(host, decor.WCSyncSpaceR),
-				decor.Name(name, decor.WCSyncSpaceR),
-				decor.Name(": ", decor.WC{W: 2}),
-				decor.CountersNoUnit("%d / %d", decor.WCSyncWidth),
-			),
-			mpb.AppendDecorators(
-				decor.OnComplete(decor.Percentage(decor.WC{W: 5}), ""),
-			),
-		),
-	}
+	mbpp.CreateJob(job, h.downloadFunc(place.Host, job, place.Path, rootDir+place.Host))
 }
 
 func getDoc(urlS string) *goquery.Document {
@@ -192,20 +157,4 @@ func fixTitleForFilename(t string) string {
 	n = strings.Replace(n, ">", "-", -1)
 	n = strings.Replace(n, "|", "-", -1)
 	return n
-}
-
-func reduceNumber(input int64, unit int64, base string, prefixes string) string {
-	if input < unit {
-		return F("%d "+base, input)
-	}
-	div, exp := int64(unit), 0
-	for n := input / unit; n >= unit; n /= unit {
-		div *= unit
-		exp++
-	}
-	return F("%.1f %ci", float64(input)/float64(div), prefixes[exp]) + base
-}
-
-func byteCountIEC(b int64) string {
-	return reduceNumber(b, 1024, "B", "KMGTPEZY")
 }
