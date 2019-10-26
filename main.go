@@ -29,7 +29,6 @@ type HostVal struct {
 
 var (
 	hosts     = map[string]HostVal{}
-	rootDir   string
 	keepJpg   bool
 	doneWg    = new(sync.WaitGroup)
 	progress  = mpb.New(mpb.WithWidth(64), mpb.WithWaitGroup(doneWg))
@@ -50,7 +49,6 @@ func main() {
 	outDir, _ := filepath.Abs(*flagOutDir)
 	outDir = strings.Replace(outDir, string(filepath.Separator), "/", -1)
 	outDir += "/"
-	rootDir = outDir
 
 	guard = semaphore.NewWeighted(int64(*flagConcur))
 	keepJpg = *flagKeepJpg
@@ -61,7 +59,7 @@ func main() {
 			log("URL parse error. Aborting!")
 			return
 		}
-		doSite(urlO)
+		doSite(urlO, outDir)
 	}
 
 	if len(*flagFile) > 0 {
@@ -79,7 +77,7 @@ func main() {
 			if err != nil {
 				return
 			}
-			doSite(urlO)
+			doSite(urlO, outDir)
 		}
 	}
 
@@ -90,7 +88,7 @@ func main() {
 	fmt.Println(F("\t%s saved", byteCountIEC(bytesDLd)))
 }
 
-func doSite(place *url.URL) {
+func doSite(place *url.URL, rootDir string) {
 	h, ok := hosts[place.Host]
 	if !ok {
 		log("Site not supported!")
