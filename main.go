@@ -97,20 +97,26 @@ func trim(x string) string {
 	return strings.Trim(x, " \n\r\t")
 }
 
-func packCbzArchive(dirIn string, fileOut string, bar *BarProxy) {
-	outf, _ := os.Create(fileOut)
-	outz := zip.NewWriter(outf)
-	files, _ := ioutil.ReadDir(dirIn)
-	for _, item := range files {
-		zw, _ := outz.Create(item.Name())
-		bs, _ := ioutil.ReadFile(dirIn + item.Name())
-		zw.Write(bs)
-	}
-	outz.Close()
-	if !keepJpg {
-		os.RemoveAll(dirIn)
-	}
-	bar.Increment(1)
+func packCbzArchive(dirIn string, fileOut string, bar *mbpp.BarProxy) {
+	mbpp.CreateJob("Packing "+fileOut, func(b *mbpp.BarProxy, _ *sync.WaitGroup) {
+		outf, _ := os.Create(fileOut)
+		outz := zip.NewWriter(outf)
+		files, _ := ioutil.ReadDir(dirIn)
+		b.AddToTotal(int64(len(files) + 2))
+		for _, item := range files {
+			zw, _ := outz.Create(item.Name())
+			bs, _ := ioutil.ReadFile(dirIn + item.Name())
+			zw.Write(bs)
+			b.Increment(1)
+		}
+		outz.Close()
+		b.Increment(1)
+		if !keepJpg {
+			os.RemoveAll(dirIn)
+		}
+		b.Increment(1)
+		bar.Increment(1)
+	})
 }
 
 func fixTitleForFilename(t string) string {
