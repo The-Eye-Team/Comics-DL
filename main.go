@@ -40,8 +40,8 @@ var (
 )
 
 func main() {
-	flagConcur := flag.IntP("concurrency", "c", 4, "The number of files to download simultaneously.")
 	flagOutDir := flag.StringP("output-dir", "o", "./results", "Output directory")
+	flagConcur := flag.IntP("concurrency", "c", 10, "The number of files to download simultaneously.")
 	flagKeepJpg := flag.BoolP("keep-jpg", "k", false, "Flag to keep/delete .jpg files of individual pages.")
 	flagURL := flag.StringP("url", "u", "", "URL of comic to download.")
 	flagFile := flag.StringP("file", "f", "", "Path to txt file with list of links to download.")
