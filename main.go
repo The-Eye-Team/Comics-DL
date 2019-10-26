@@ -105,7 +105,7 @@ func packCbzArchive(dirIn string, fileOut string, bar *mbpp.BarProxy) {
 		b.AddToTotal(int64(len(files) + 2))
 		for _, item := range files {
 			zw, _ := outz.Create(item.Name())
-			bs, _ := ioutil.ReadFile(dirIn + item.Name())
+			bs, _ := ioutil.ReadFile(dirIn + "/" + item.Name())
 			zw.Write(bs)
 			b.Increment(1)
 		}
