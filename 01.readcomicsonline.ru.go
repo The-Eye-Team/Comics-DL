@@ -33,10 +33,11 @@ func init() {
 				go mbpp.CreateJob(name+" / "+issue, func(jbar *mbpp.BarProxy, wg *sync.WaitGroup) {
 					defer mbar.Increment(1)
 					//
-					dir2 := F(outputDir+"/cbz/%s/", name)
+					dir2 := outputDir + "/" + name
+					dir := dir2 + "/Issue " + issue
+					finp := dir + ".cbz"
+
 					os.MkdirAll(dir2, os.ModePerm)
-					finp := F("%sIssue %s.cbz", dir2, issue)
-					dir := F(outputDir+"/jpg/%s/Issue %s/", name, issue)
 					if !util.DoesFileExist(finp) {
 						os.MkdirAll(dir, os.ModePerm)
 						jbar.AddToTotal(1)
