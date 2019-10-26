@@ -39,7 +39,6 @@ func main() {
 
 	outDir, _ := filepath.Abs(*flagOutDir)
 	outDir = strings.Replace(outDir, string(filepath.Separator), "/", -1)
-	outDir += "/"
 
 	mbpp.Init(*flagConcur)
 	keepJpg = *flagKeepJpg
