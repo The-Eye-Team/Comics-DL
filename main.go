@@ -82,8 +82,9 @@ func doSite(place *url.URL, rootDir string) {
 	if !ok {
 		return
 	}
-	job := strings.Split(place.Path, "/")[h.idPathIndex]
-	mbpp.CreateJob(job, h.downloadFunc(place.Host, job, place.Path, rootDir+place.Host))
+	id := strings.Split(place.Path, "/")[h.idPathIndex]
+	job := place.Host + " / " + id
+	mbpp.CreateJob(job, h.downloadFunc(place.Host, id, place.Path, rootDir+"/"+place.Host))
 }
 
 func getDoc(urlS string) *goquery.Document {
