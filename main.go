@@ -88,7 +88,8 @@ func doSite(place *url.URL, rootDir string) {
 }
 
 func getDoc(urlS string) *goquery.Document {
-	doc, _ := goquery.NewDocumentFromReader(doRequest(urlS).Body)
+	res, _ := http.Get(urlS)
+	doc, _ := goquery.NewDocumentFromReader(res.Body)
 	return doc
 }
 
