@@ -47,18 +47,18 @@ func main() {
 	if len(*flagURL) > 0 {
 		urlO, err := url.Parse(*flagURL)
 		if err != nil {
-			log("URL parse error. Aborting!")
+			util.Log("URL parse error. Aborting!")
 			return
 		}
 		doSite(urlO, outDir)
 	}
 
 	if len(*flagFile) > 0 {
-		if !doesFileExist(*flagFile) {
-			log("Unable to reach file!")
+		pth, _ := filepath.Abs(*flagFile)
+		if !util.DoesFileExist(pth) {
+			util.Log("Unable to reach file!")
 			return
 		}
-		pth, _ := filepath.Abs(*flagFile)
 		file, _ := os.Open(pth)
 		scan := bufio.NewScanner(file)
 
@@ -94,39 +94,6 @@ func getDoc(urlS string) *goquery.Document {
 
 func trim(x string) string {
 	return strings.Trim(x, " \n\r\t")
-}
-
-func doesFileExist(file string) bool {
-	_, err := os.Stat(file)
-	return !os.IsNotExist(err)
-}
-
-func log(message ...interface{}) {
-	fmt.Print("[" + time.Now().UTC().String()[5:19] + "] ")
-	fmt.Println(message...)
-}
-
-func doRequest(urlS string) *http.Response {
-	req, _ := http.NewRequest(http.MethodGet, urlS, strings.NewReader(""))
-	req.Header.Add("User-Agent", "The-Eye-Team/Comics-DL/1.0")
-	res, _ := http.DefaultClient.Do(req)
-	return res
-}
-
-func doesDirectoryExist(path string) bool {
-	s, err := os.Stat(path)
-	if err != nil {
-		return false
-	}
-	if !s.IsDir() {
-		return false
-	}
-	return true
-}
-
-// F is an shorthand alias to fmt.Sprintf
-func F(format string, args ...interface{}) string {
-	return fmt.Sprintf(format, args...)
 }
 
 func packCbzArchive(dirIn string, fileOut string, bar *BarProxy) {
