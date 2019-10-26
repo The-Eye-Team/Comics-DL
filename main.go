@@ -132,3 +132,7 @@ func fixTitleForFilename(t string) string {
 	n = strings.Replace(n, "|", "-", -1)
 	return n
 }
+
+func padPgNum(n int) string {
+	return fmt.Sprintf("%04d", n)
+}
