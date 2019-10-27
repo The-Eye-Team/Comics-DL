@@ -5,6 +5,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/The-Eye-Team/Comics-DL/pkg/idata"
 	"github.com/The-Eye-Team/Comics-DL/pkg/itypes"
 
 	"github.com/PuerkitoBio/goquery"
@@ -13,7 +14,7 @@ import (
 )
 
 func init() {
-	hosts["doujins.com"] = itypes.HostVal{2, func(host string, id string, path string, outputDir string) func(*mbpp.BarProxy, *sync.WaitGroup) {
+	idata.Hosts["doujins.com"] = itypes.HostVal{2, func(host string, id string, path string, outputDir string) func(*mbpp.BarProxy, *sync.WaitGroup) {
 		return func(bar *mbpp.BarProxy, _ *sync.WaitGroup) {
 
 			d := getDoc("https://" + host + path)

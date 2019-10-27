@@ -14,17 +14,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/The-Eye-Team/Comics-DL/pkg/itypes"
+	"github.com/The-Eye-Team/Comics-DL/pkg/idata"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/nektro/go-util/mbpp"
 	"github.com/nektro/go-util/util"
 	flag "github.com/spf13/pflag"
-)
-
-var (
-	hosts   = map[string]itypes.HostVal{}
-	keepJpg bool
 )
 
 func main() {
@@ -39,7 +34,7 @@ func main() {
 	outDir = strings.Replace(outDir, string(filepath.Separator), "/", -1)
 
 	mbpp.Init(*flagConcur)
-	keepJpg = *flagKeepJpg
+	idata.KeepJpg = *flagKeepJpg
 
 	if len(*flagURL) > 0 {
 		urlO, err := url.Parse(*flagURL)
@@ -76,7 +71,7 @@ func main() {
 }
 
 func doSite(place *url.URL, rootDir string) {
-	h, ok := hosts[place.Host]
+	h, ok := idata.Hosts[place.Host]
 	if !ok {
 		return
 	}
@@ -109,7 +104,7 @@ func packCbzArchive(dirIn string, fileOut string, bar *mbpp.BarProxy) {
 		}
 		outz.Close()
 		b.Increment(1)
-		if !keepJpg {
+		if !idata.KeepJpg {
 			os.RemoveAll(dirIn)
 		}
 		b.Increment(1)
