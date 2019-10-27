@@ -8,8 +8,8 @@ A comic and doujinshi archiver that saves as `.cbz` with support for the followi
 
 - https://readcomicsonline.ru/
 - (⚠) https://www.tsumino.com/
-- (⚠) https://myreadingmanga.info/
 - https://e-hentai.org/
+- https://myreadingmanga.info/
 
 ## Download
 ```

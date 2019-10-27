@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -135,4 +136,9 @@ func fixTitleForFilename(t string) string {
 
 func padPgNum(n int) string {
 	return fmt.Sprintf("%04d", n)
+}
+
+func parseInt(s string) int {
+	x, _ := strconv.ParseInt(s, 10, 32)
+	return int(x)
 }
