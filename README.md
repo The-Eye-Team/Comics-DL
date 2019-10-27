@@ -10,6 +10,7 @@ A comic and doujinshi archiver that saves as `.cbz` with support for the followi
 - (⚠) https://www.tsumino.com/
 - https://e-hentai.org/
 - https://myreadingmanga.info/
+- https://doujins.com/
 
 ## Download
 ```
