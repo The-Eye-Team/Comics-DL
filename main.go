@@ -15,6 +15,8 @@ import (
 	"github.com/nektro/go-util/mbpp"
 	"github.com/nektro/go-util/util"
 	flag "github.com/spf13/pflag"
+
+	_ "github.com/The-Eye-Team/Comics-DL/pkg/sites"
 )
 
 func main() {

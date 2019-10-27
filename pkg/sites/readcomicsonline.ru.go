@@ -1,4 +1,4 @@
-package main
+package sites
 
 import (
 	"net/http"
@@ -40,6 +40,9 @@ func init() {
 					dir := dir2 + "/Issue " + issue
 					finp := dir + ".cbz"
 
+					if util.DoesFileExist(finp) {
+						return
+					}
 					os.MkdirAll(dir2, os.ModePerm)
 					if !util.DoesFileExist(finp) {
 						os.MkdirAll(dir, os.ModePerm)
