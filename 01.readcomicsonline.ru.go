@@ -8,10 +8,9 @@ import (
 	"sync"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/nektro/go-util/alias"
 	"github.com/nektro/go-util/mbpp"
 	"github.com/nektro/go-util/util"
-
-	. "github.com/nektro/go-util/alias"
 )
 
 func init() {
@@ -46,7 +45,7 @@ func init() {
 							if util.DoesFileExist(pth) {
 								continue
 							}
-							u := F("https://readcomicsonline.ru/uploads/manga/%s/chapters/%s/%02d.jpg", id, issue, j)
+							u := alias.F("https://readcomicsonline.ru/uploads/manga/%s/chapters/%s/%02d.jpg", id, issue, j)
 							res, _ := http.Head(u)
 							if res.StatusCode != 200 {
 								break
