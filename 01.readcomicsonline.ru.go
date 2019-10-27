@@ -42,7 +42,7 @@ func init() {
 						os.MkdirAll(dir, os.ModePerm)
 						jbar.AddToTotal(1)
 						for j := 1; true; j++ {
-							pth := F("%s%03d.jpg", dir, j)
+							pth := dir + "/" + padPgNum(j) + ".jpg"
 							if util.DoesFileExist(pth) {
 								continue
 							}
