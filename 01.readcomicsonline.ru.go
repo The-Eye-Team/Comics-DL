@@ -9,6 +9,7 @@ import (
 
 	"github.com/The-Eye-Team/Comics-DL/pkg/idata"
 	"github.com/The-Eye-Team/Comics-DL/pkg/itypes"
+	"github.com/The-Eye-Team/Comics-DL/pkg/iutil"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/nektro/go-util/alias"
@@ -20,9 +21,9 @@ func init() {
 	idata.Hosts["readcomicsonline.ru"] = itypes.HostVal{2, func(host string, id string, path string, outputDir string) func(*mbpp.BarProxy, *sync.WaitGroup) {
 		return func(mbar *mbpp.BarProxy, _ *sync.WaitGroup) {
 			//
-			d := getDoc("https://" + host + "/comic/" + id)
+			d := iutil.GetDoc("https://" + host + "/comic/" + id)
 			s := d.Find("ul.chapters li")
-			n := fixTitleForFilename(trim(d.Find("h2.listmanga-header").Eq(0).Text()))
+			n := iutil.FixTitleForFilename(iutil.Trim(d.Find("h2.listmanga-header").Eq(0).Text()))
 			mbar.AddToTotal(int64(s.Length()))
 			s.Each(func(i int, el *goquery.Selection) {
 				is0, _ := el.Children().First().Children().First().Attr("href")
@@ -44,7 +45,7 @@ func init() {
 						os.MkdirAll(dir, os.ModePerm)
 						jbar.AddToTotal(1)
 						for j := 1; true; j++ {
-							pth := dir + "/" + padPgNum(j) + ".jpg"
+							pth := dir + "/" + iutil.PadPgNum(j) + ".jpg"
 							if util.DoesFileExist(pth) {
 								continue
 							}
@@ -58,7 +59,7 @@ func init() {
 							go mbpp.CreateDownloadJob(u, pth, wg, jbar)
 						}
 						wg.Wait()
-						packCbzArchive(dir, finp, jbar)
+						iutil.PackCbzArchive(dir, finp, jbar)
 					}
 				})
 			})

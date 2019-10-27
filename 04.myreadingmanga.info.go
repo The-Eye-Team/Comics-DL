@@ -8,6 +8,7 @@ import (
 
 	"github.com/The-Eye-Team/Comics-DL/pkg/idata"
 	"github.com/The-Eye-Team/Comics-DL/pkg/itypes"
+	"github.com/The-Eye-Team/Comics-DL/pkg/iutil"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/nektro/go-util/mbpp"
@@ -22,7 +23,7 @@ func init() {
 			b.AddToTotal(int64(s.Length()))
 
 			s.Each(func(i int, el *goquery.Selection) {
-				pn := padPgNum(p) + "_" + padPgNum(i)
+				pn := iutil.PadPgNum(p) + "_" + iutil.PadPgNum(i)
 				//
 				urlS, _ := el.Attr("data-lazy-src")
 				mbpp.CreateDownloadJob(urlS, dir+"/"+pn+".jpg", mbpp.BlankWaitGroup(), b)
@@ -31,10 +32,10 @@ func init() {
 
 		return func(bar *mbpp.BarProxy, _ *sync.WaitGroup) {
 
-			d := getDoc("https://" + host + "/" + id + "/")
+			d := iutil.GetDoc("https://" + host + "/" + id + "/")
 			t := strings.TrimSuffix(d.Find("title").Text(), " - MyReadingManga")
 
-			dir := outputDir + "/" + fixTitleForFilename(t)
+			dir := outputDir + "/" + iutil.FixTitleForFilename(t)
 			out := dir + ".cbz"
 			if util.DoesFileExist(out) {
 				return
@@ -44,16 +45,16 @@ func init() {
 			savePage(1, d, bar, dir)
 			c := d.Find("a.post-page-numbers")
 			if c.Length() > 0 {
-				end := parseInt(c.Eq(c.Length() - 2).Text())
+				end := iutil.ParseInt(c.Eq(c.Length() - 2).Text())
 				for i := 2; i < end; i++ {
 					is := strconv.Itoa(i)
-					savePage(i, getDoc("https://"+host+"/"+id+"/"+is+"/"), bar, dir)
+					savePage(i, iutil.GetDoc("https://"+host+"/"+id+"/"+is+"/"), bar, dir)
 				}
 			}
 
 			bar.Wait()
 			bar.AddToTotal(1)
-			packCbzArchive(dir, out, bar)
+			iutil.PackCbzArchive(dir, out, bar)
 		}
 	}}
 }

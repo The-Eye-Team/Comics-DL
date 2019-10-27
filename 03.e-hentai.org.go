@@ -8,6 +8,7 @@ import (
 
 	"github.com/The-Eye-Team/Comics-DL/pkg/idata"
 	"github.com/The-Eye-Team/Comics-DL/pkg/itypes"
+	"github.com/The-Eye-Team/Comics-DL/pkg/iutil"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/nektro/go-util/mbpp"
@@ -21,21 +22,21 @@ func init() {
 			b.AddToTotal(int64(s.Length()))
 
 			s.Each(func(i int, el *goquery.Selection) {
-				pn := padPgNum(p) + "_" + padPgNum(i)
+				pn := iutil.PadPgNum(p) + "_" + iutil.PadPgNum(i)
 				//
 				url1, _ := el.Parent().Attr("href")
-				url2, _ := getDoc(url1).Find("#img").Attr("src")
+				url2, _ := iutil.GetDoc(url1).Find("#img").Attr("src")
 				mbpp.CreateDownloadJob(url2, dir+"/"+pn+".jpg", mbpp.BlankWaitGroup(), b)
 			})
 		}
 
 		return func(bar *mbpp.BarProxy, _ *sync.WaitGroup) {
 
-			d := getDoc("https://" + host + path + "?p=0")
+			d := iutil.GetDoc("https://" + host + path + "?p=0")
 			t := strings.TrimSuffix(d.Find("title").Text(), " - E-Hentai Galleries")
 			bar.AddToTotal(1)
 
-			dir := outputDir + "/" + id + "." + fixTitleForFilename(t)
+			dir := outputDir + "/" + id + "." + iutil.FixTitleForFilename(t)
 			os.MkdirAll(dir, os.ModePerm)
 
 			savePage(0, d, bar, dir)
@@ -46,11 +47,11 @@ func init() {
 
 				pli := int(pl)
 				for i := 1; i <= pli; i++ {
-					savePage(i, getDoc("https://"+host+path+"?p="+strconv.Itoa(pli)), bar, dir)
+					savePage(i, iutil.GetDoc("https://"+host+path+"?p="+strconv.Itoa(pli)), bar, dir)
 				}
 			}
 
-			packCbzArchive(dir, dir+".cbz", bar)
+			iutil.PackCbzArchive(dir, dir+".cbz", bar)
 		}
 	}}
 }
