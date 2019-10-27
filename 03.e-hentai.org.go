@@ -6,12 +6,14 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/The-Eye-Team/Comics-DL/pkg/itypes"
+
 	"github.com/PuerkitoBio/goquery"
 	"github.com/nektro/go-util/mbpp"
 )
 
 func init() {
-	hosts["e-hentai.org"] = HostVal{2, func(host string, id string, path string, outputDir string) func(*mbpp.BarProxy, *sync.WaitGroup) {
+	hosts["e-hentai.org"] = itypes.HostVal{2, func(host string, id string, path string, outputDir string) func(*mbpp.BarProxy, *sync.WaitGroup) {
 
 		savePage := func(p int, d *goquery.Document, b *mbpp.BarProxy, dir string) {
 			s := d.Find("div.gdtm a img")

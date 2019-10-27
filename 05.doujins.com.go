@@ -5,13 +5,15 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/The-Eye-Team/Comics-DL/pkg/itypes"
+
 	"github.com/PuerkitoBio/goquery"
 	"github.com/nektro/go-util/mbpp"
 	"github.com/nektro/go-util/util"
 )
 
 func init() {
-	hosts["doujins.com"] = HostVal{2, func(host string, id string, path string, outputDir string) func(*mbpp.BarProxy, *sync.WaitGroup) {
+	hosts["doujins.com"] = itypes.HostVal{2, func(host string, id string, path string, outputDir string) func(*mbpp.BarProxy, *sync.WaitGroup) {
 		return func(bar *mbpp.BarProxy, _ *sync.WaitGroup) {
 
 			d := getDoc("https://" + host + path)

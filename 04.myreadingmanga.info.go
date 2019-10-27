@@ -6,13 +6,15 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/The-Eye-Team/Comics-DL/pkg/itypes"
+
 	"github.com/PuerkitoBio/goquery"
 	"github.com/nektro/go-util/mbpp"
 	"github.com/nektro/go-util/util"
 )
 
 func init() {
-	hosts["myreadingmanga.info"] = HostVal{1, func(host string, id string, path string, outputDir string) func(*mbpp.BarProxy, *sync.WaitGroup) {
+	hosts["myreadingmanga.info"] = itypes.HostVal{1, func(host string, id string, path string, outputDir string) func(*mbpp.BarProxy, *sync.WaitGroup) {
 
 		savePage := func(p int, d *goquery.Document, b *mbpp.BarProxy, dir string) {
 			s := d.Find("div.entry-content img.img-myreadingmanga")

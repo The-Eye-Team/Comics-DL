@@ -14,19 +14,16 @@ import (
 	"sync"
 	"time"
 
+	"github.com/The-Eye-Team/Comics-DL/pkg/itypes"
+
 	"github.com/PuerkitoBio/goquery"
 	"github.com/nektro/go-util/mbpp"
 	"github.com/nektro/go-util/util"
 	flag "github.com/spf13/pflag"
 )
 
-type HostVal struct {
-	idPathIndex  int
-	downloadFunc func(string, string, string, string) func(*mbpp.BarProxy, *sync.WaitGroup)
-}
-
 var (
-	hosts   = map[string]HostVal{}
+	hosts   = map[string]itypes.HostVal{}
 	keepJpg bool
 )
 
@@ -83,9 +80,9 @@ func doSite(place *url.URL, rootDir string) {
 	if !ok {
 		return
 	}
-	id := strings.Split(place.Path, "/")[h.idPathIndex]
+	id := strings.Split(place.Path, "/")[h.IDPathIndex]
 	job := place.Host + " / " + id
-	mbpp.CreateJob(job, h.downloadFunc(place.Host, id, place.Path, rootDir+"/"+place.Host))
+	mbpp.CreateJob(job, h.DownloadFunc(place.Host, id, place.Path, rootDir+"/"+place.Host))
 }
 
 func getDoc(urlS string) *goquery.Document {
