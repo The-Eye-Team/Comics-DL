@@ -18,12 +18,11 @@ func init() {
 			b.AddToTotal(int64(s.Length()))
 
 			s.Each(func(i int, el *goquery.Selection) {
-				pn := (40 * p) + i + 1
+				pn := padPgNum(p) + "_" + padPgNum(i)
 				//
 				url1, _ := el.Parent().Attr("href")
 				url2, _ := getDoc(url1).Find("#img").Attr("src")
-				mbpp.CreateDownloadJob(url2, dir+"/"+padPgNum(pn)+".jpg", mbpp.BlankWaitGroup(), b)
-
+				mbpp.CreateDownloadJob(url2, dir+"/"+pn+".jpg", mbpp.BlankWaitGroup(), b)
 			})
 		}
 
