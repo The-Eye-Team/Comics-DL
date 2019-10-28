@@ -30,5 +30,7 @@ go get -u github.com/The-Eye-Team/Comics-DL
 | `-k` | `--keep-jpg` | `false` | Flag to keep/destroy the `.jpg` page data. |
 | `-f` | `--file` | None. | Path to file with list of URLs to download. |
 
+Files will be save to the location `{--output-dir}/{domain}/{title}.cbz
+
 ## License
 MIT.
