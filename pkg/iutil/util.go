@@ -37,9 +37,9 @@ func Trim(x string) string {
 	return strings.Trim(x, " \n\r\t")
 }
 
-func PackCbzArchive(dirIn string, fileOut string, bar *mbpp.BarProxy) {
-	mbpp.CreateJob("Packing "+fileOut, func(b *mbpp.BarProxy, _ *sync.WaitGroup) {
-		outf, _ := os.Create(fileOut)
+func PackCbzArchive(dirIn string, title string, bar *mbpp.BarProxy) {
+	mbpp.CreateJob("Packing "+title, func(b *mbpp.BarProxy, _ *sync.WaitGroup) {
+		outf, _ := os.Create(dirIn + ".cbz")
 		outz := zip.NewWriter(outf)
 		files, _ := ioutil.ReadDir(dirIn)
 		b.AddToTotal(int64(len(files) + 2))

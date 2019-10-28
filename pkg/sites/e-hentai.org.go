@@ -51,7 +51,7 @@ func init() {
 				}
 			}
 
-			iutil.PackCbzArchive(dir, dir+".cbz", bar)
+			iutil.PackCbzArchive(dir, host+"/"+id, bar)
 		}
 	}}
 }

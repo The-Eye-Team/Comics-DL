@@ -45,7 +45,7 @@ func init() {
 
 			bar.Wait()
 			bar.AddToTotal(1)
-			iutil.PackCbzArchive(dir, out, bar)
+			iutil.PackCbzArchive(dir, host+"/"+id, bar)
 		}
 	}}
 }
