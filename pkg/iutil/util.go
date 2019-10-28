@@ -25,6 +25,7 @@ func DoSite(place *url.URL, rootDir string) {
 	id := strings.Split(place.Path, "/")[h.IDPathIndex]
 	job := place.Host + " / " + id
 	mbpp.CreateJob(job, h.DownloadFunc(place.Host, id, place.Path, rootDir+"/"+place.Host))
+	idata.Wg.Done()
 }
 
 func GetDoc(urlS string) *goquery.Document {
