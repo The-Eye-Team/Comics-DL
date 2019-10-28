@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/The-Eye-Team/Comics-DL/pkg/idata"
@@ -34,6 +35,9 @@ func main() {
 
 	idata.KeepJpg = *flagKeepJpg
 
+	idata.Wg = new(sync.WaitGroup)
+	idata.C = 0
+
 	if len(*flagURL) > 0 {
 		urlO, err := url.Parse(*flagURL)
 		if err != nil {
@@ -58,7 +62,13 @@ func main() {
 			if err != nil {
 				return
 			}
-			iutil.DoSite(urlO, outDir)
+			for idata.C == *flagConcur-10 {
+				idata.Wg.Wait()
+				idata.C = 0
+			}
+			idata.C++
+			idata.Wg.Add(1)
+			go iutil.DoSite(urlO, outDir)
 		}
 	}
 
