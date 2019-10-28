@@ -31,6 +31,7 @@ func main() {
 	outDir = strings.Replace(outDir, string(filepath.Separator), "/", -1)
 
 	mbpp.Init(*flagConcur)
+
 	idata.KeepJpg = *flagKeepJpg
 
 	if len(*flagURL) > 0 {
