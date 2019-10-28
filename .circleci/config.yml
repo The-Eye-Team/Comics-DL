@@ -3,7 +3,7 @@
 version: 2
 jobs:
   build:
-    working_directory: /go/src/github.com/nektro/andesite
+    working_directory: /go/src/github.com/The-Eye-Team/Comics-DL
     docker:
       - image: circleci/golang:1.12
     steps:
