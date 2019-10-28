@@ -1,6 +1,6 @@
 # Comics-DL
 [![license](https://img.shields.io/github/license/The-Eye-Team/Comics-DL.svg)](https://github.com/The-Eye-Team/Comics-DL/blob/master/LICENSE)
-[![discord](https://img.shields.io/discord/302796547656253441.svg)](https://discord.gg/F55Px2y)
+[![discord](https://img.shields.io/discord/302796547656253441.svg)](https://discord.gg/the-eye)
 
 A comic and doujinshi archiver that saves as `.cbz` with support for the following sites:
 
