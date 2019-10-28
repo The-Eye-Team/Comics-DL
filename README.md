@@ -10,6 +10,7 @@ A comic and doujinshi archiver that saves as `.cbz` with support for the followi
 - https://myreadingmanga.info/
 - https://doujins.com/
 - https://nhentai.net/
+- https://pururin.io/
 
 ## Download
 ```
