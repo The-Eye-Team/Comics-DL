@@ -1,6 +1,7 @@
 # Comics-DL
 [![license](https://img.shields.io/github/license/The-Eye-Team/Comics-DL.svg)](https://github.com/The-Eye-Team/Comics-DL/blob/master/LICENSE)
 [![discord](https://img.shields.io/discord/302796547656253441.svg)](https://discord.gg/the-eye)
+[![CircleCI](https://circleci.com/gh/The-Eye-Team/Comics-DL.svg?style=svg)](https://circleci.com/gh/The-Eye-Team/Comics-DL)
 
 A comic and doujinshi archiver that saves as `.cbz` with support for the following sites:
 
@@ -31,6 +32,16 @@ go get -u github.com/The-Eye-Team/Comics-DL
 | `-f` | `--file` | None. | Path to file with list of URLs to download. |
 
 Files will be save to the location `{--output-dir}/{domain}/{title}.cbz
+
+## Builds
+[![circleci](https://circleci.com/gh/The-Eye-Team/Comics-DL.svg?style=svg)](https://circleci.com/gh/The-Eye-Team/Comics-DL)
+
+Pre-compiled binaries are published on Circle CI at https://circleci.com/gh/The-Eye-Team/Comics-DL. To download a binary, navigate to the most recent build and click on 'Artifacts'. Here there will be a list of files. Click on the one appropriate for your system.
+
+Once downloaded, run the following with the values applicable to you.
+```
+$ ./comics-dl-{build_date}-{git_tag}-{os}-{arch}
+```
 
 ## License
 MIT.
