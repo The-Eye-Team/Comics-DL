@@ -15,7 +15,7 @@ A comic and doujinshi archiver that saves as `.cbz` with support for the followi
 
 ## Download
 ```
-go get -u github.com/The-Eye-Team/Comics-DL
+go get -u -v github.com/The-Eye-Team/Comics-DL
 ```
 
 ## Usage
