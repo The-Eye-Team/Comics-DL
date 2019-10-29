@@ -33,7 +33,7 @@ go get -u -v github.com/The-Eye-Team/Comics-DL
 | `-k` | `--keep-jpg` | `false` | Flag to keep/destroy the `.jpg` page data. |
 | `-f` | `--file` | None. | Path to file with list of URLs to download. |
 
-Files will be save to the location `{--output-dir}/{domain}/{title}.cbz
+Files will be save to the location `{--output-dir}/{domain}/{title}.cbz`
 
 ## Builds
 [![circleci](https://circleci.com/gh/The-Eye-Team/Comics-DL.svg?style=svg)](https://circleci.com/gh/The-Eye-Team/Comics-DL)
