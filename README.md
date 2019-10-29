@@ -28,7 +28,7 @@ go get -u -v github.com/The-Eye-Team/Comics-DL
 |      | Name | Default Value | Description |
 |------|------|---------------|-------------|
 | `-u` | `--url` | None. | URL of comic to save. |
-| `-c` | `--concurrency` | `20` | The number of simultaneous downloads to run. |
+| `-c` | `--concurrency` | `5` | The number of simultaneous downloads to run. |
 | `-o` | `--output-dir` | `./results/` | Path to directory to save files to. |
 | `-k` | `--keep-jpg` | `false` | Flag to keep/destroy the `.jpg` page data. |
 | `-f` | `--file` | None. | Path to file with list of URLs to download. |
