@@ -74,6 +74,9 @@ func main() {
 
 	time.Sleep(time.Second / 2)
 	mbpp.Wait()
+	onClose()
+}
 
+func onClose() {
 	fmt.Println("Completed download with", mbpp.GetTaskCount(), "tasks and", util.ByteCountIEC(mbpp.GetTaskDownloadSize()), "bytes.")
 }
