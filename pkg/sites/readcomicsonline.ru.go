@@ -33,7 +33,7 @@ func init() {
 				//
 				name := n
 				issue := is3["x"][0]
-				go mbpp.CreateJob(name+" / "+issue, func(jbar *mbpp.BarProxy, wg *sync.WaitGroup) {
+				mbpp.CreateJob(name+" / "+issue, func(jbar *mbpp.BarProxy, _ *sync.WaitGroup) {
 					defer mbar.Increment(1)
 					//
 					dir2 := outputDir + "/" + name
@@ -46,7 +46,6 @@ func init() {
 					os.MkdirAll(dir2, os.ModePerm)
 					if !util.DoesFileExist(finp) {
 						os.MkdirAll(dir, os.ModePerm)
-						jbar.AddToTotal(1)
 						for j := 1; true; j++ {
 							pth := dir + "/" + iutil.PadPgNum(j) + ".jpg"
 							if util.DoesFileExist(pth) {
@@ -58,10 +57,10 @@ func init() {
 								break
 							}
 							jbar.AddToTotal(1)
-							wg.Add(1)
-							go mbpp.CreateDownloadJob(u, pth, wg, jbar)
+							go mbpp.CreateDownloadJob(u, pth, mbpp.BlankWaitGroup(), jbar)
 						}
-						wg.Wait()
+						jbar.Wait()
+						jbar.AddToTotal(1)
 						iutil.PackCbzArchive(dir, host+"/"+id+"/"+issue, jbar)
 					}
 				})
