@@ -37,6 +37,7 @@ func main() {
 	idata.KeepJpg = *flagKeepJpg
 
 	idata.Guard = semaphore.NewWeighted(int64(*flagConcur + 10))
+	ctx := context.TODO()
 
 	util.RunOnClose(onClose)
 
@@ -46,6 +47,7 @@ func main() {
 			util.Log("URL parse error. Aborting!")
 			return
 		}
+		idata.Guard.Acquire(ctx, 1)
 		go iutil.DoSite(urlO, outDir)
 	}
 
@@ -57,7 +59,6 @@ func main() {
 		}
 		file, _ := os.Open(pth)
 		scan := bufio.NewScanner(file)
-		ctx := context.TODO()
 
 		for scan.Scan() {
 			line := scan.Text()
