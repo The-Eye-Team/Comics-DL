@@ -46,7 +46,7 @@ func main() {
 			util.Log("URL parse error. Aborting!")
 			return
 		}
-		iutil.DoSite(urlO, outDir)
+		go iutil.DoSite(urlO, outDir)
 	}
 
 	if len(*flagFile) > 0 {
