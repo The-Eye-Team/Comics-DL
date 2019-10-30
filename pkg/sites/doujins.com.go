@@ -3,7 +3,6 @@ package sites
 import (
 	"os"
 	"strings"
-	"sync"
 
 	"github.com/The-Eye-Team/Comics-DL/pkg/idata"
 	"github.com/The-Eye-Team/Comics-DL/pkg/itypes"
@@ -15,8 +14,8 @@ import (
 )
 
 func init() {
-	idata.Hosts["doujins.com"] = itypes.HostVal{2, func(host string, id string, path string, outputDir string) func(*mbpp.BarProxy, *sync.WaitGroup) {
-		return func(bar *mbpp.BarProxy, _ *sync.WaitGroup) {
+	idata.Hosts["doujins.com"] = itypes.HostVal{2, func(host string, id string, path string, outputDir string) func(*mbpp.BarProxy) {
+		return func(bar *mbpp.BarProxy) {
 
 			d := iutil.GetDoc("https://" + host + path)
 			t := d.Find("title").Text()
@@ -34,7 +33,7 @@ func init() {
 				urlS, _ := el.Attr("data-file")
 				urlS = strings.ReplaceAll(urlS, "&amp;", "&")
 				pth := dir + "/" + iutil.PadPgNum(i+1) + ".jpg"
-				go mbpp.CreateDownloadJob(urlS, pth, mbpp.BlankWaitGroup(), bar)
+				go mbpp.CreateDownloadJob(urlS, pth, bar)
 			})
 
 			bar.Wait()

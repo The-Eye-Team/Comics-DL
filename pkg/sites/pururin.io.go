@@ -3,7 +3,6 @@ package sites
 import (
 	"os"
 	"strconv"
-	"sync"
 
 	"github.com/The-Eye-Team/Comics-DL/pkg/idata"
 	"github.com/The-Eye-Team/Comics-DL/pkg/itypes"
@@ -14,8 +13,8 @@ import (
 )
 
 func init() {
-	idata.Hosts["pururin.io"] = itypes.HostVal{2, func(host string, id string, path string, outputDir string) func(*mbpp.BarProxy, *sync.WaitGroup) {
-		return func(bar *mbpp.BarProxy, _ *sync.WaitGroup) {
+	idata.Hosts["pururin.io"] = itypes.HostVal{2, func(host string, id string, path string, outputDir string) func(*mbpp.BarProxy) {
+		return func(bar *mbpp.BarProxy) {
 
 			d := iutil.GetDoc("https://" + host + path)
 			t := d.Find("div.content-wrapper div.title h1").Text()
@@ -34,7 +33,7 @@ func init() {
 			for i := 1; i <= l; i++ {
 				f := strconv.Itoa(i) + ".jpg"
 				g := iutil.PadPgNum(i) + ".jpg"
-				go mbpp.CreateDownloadJob("https://cdn.pururin.io/assets/images/data/"+id+"/"+f, dir+"/"+g, mbpp.BlankWaitGroup(), bar)
+				go mbpp.CreateDownloadJob("https://cdn.pururin.io/assets/images/data/"+id+"/"+f, dir+"/"+g, bar)
 			}
 
 			bar.Wait()

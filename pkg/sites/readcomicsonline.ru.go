@@ -5,7 +5,6 @@ import (
 	"net/url"
 	"os"
 	"strings"
-	"sync"
 
 	"github.com/The-Eye-Team/Comics-DL/pkg/idata"
 	"github.com/The-Eye-Team/Comics-DL/pkg/itypes"
@@ -18,8 +17,8 @@ import (
 )
 
 func init() {
-	idata.Hosts["readcomicsonline.ru"] = itypes.HostVal{2, func(host string, id string, path string, outputDir string) func(*mbpp.BarProxy, *sync.WaitGroup) {
-		return func(mbar *mbpp.BarProxy, _ *sync.WaitGroup) {
+	idata.Hosts["readcomicsonline.ru"] = itypes.HostVal{2, func(host string, id string, path string, outputDir string) func(*mbpp.BarProxy) {
+		return func(mbar *mbpp.BarProxy) {
 			//
 			d := iutil.GetDoc("https://" + host + "/comic/" + id)
 			s := d.Find("ul.chapters li")
@@ -33,7 +32,7 @@ func init() {
 				//
 				name := n
 				issue := is3["x"][0]
-				mbpp.CreateJob(name+" / "+issue, func(jbar *mbpp.BarProxy, _ *sync.WaitGroup) {
+				mbpp.CreateJob(name+" / "+issue, func(jbar *mbpp.BarProxy) {
 					defer mbar.Increment(1)
 					//
 					dir2 := outputDir + "/" + name
@@ -57,7 +56,7 @@ func init() {
 								break
 							}
 							jbar.AddToTotal(1)
-							go mbpp.CreateDownloadJob(u, pth, mbpp.BlankWaitGroup(), jbar)
+							go mbpp.CreateDownloadJob(u, pth, jbar)
 						}
 						jbar.Wait()
 						jbar.AddToTotal(1)

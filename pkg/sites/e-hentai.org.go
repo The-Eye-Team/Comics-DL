@@ -4,7 +4,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"sync"
 
 	"github.com/The-Eye-Team/Comics-DL/pkg/idata"
 	"github.com/The-Eye-Team/Comics-DL/pkg/itypes"
@@ -15,7 +14,7 @@ import (
 )
 
 func init() {
-	idata.Hosts["e-hentai.org"] = itypes.HostVal{2, func(host string, id string, path string, outputDir string) func(*mbpp.BarProxy, *sync.WaitGroup) {
+	idata.Hosts["e-hentai.org"] = itypes.HostVal{2, func(host string, id string, path string, outputDir string) func(*mbpp.BarProxy) {
 
 		savePage := func(p int, d *goquery.Document, b *mbpp.BarProxy, dir string) {
 			s := d.Find("div.gdtm a img")
@@ -26,11 +25,11 @@ func init() {
 				//
 				url1, _ := el.Parent().Attr("href")
 				url2, _ := iutil.GetDoc(url1).Find("#img").Attr("src")
-				mbpp.CreateDownloadJob(url2, dir+"/"+pn+".jpg", mbpp.BlankWaitGroup(), b)
+				mbpp.CreateDownloadJob(url2, dir+"/"+pn+".jpg", b)
 			})
 		}
 
-		return func(bar *mbpp.BarProxy, _ *sync.WaitGroup) {
+		return func(bar *mbpp.BarProxy) {
 
 			d := iutil.GetDoc("https://" + host + path + "?p=0")
 			t := strings.TrimSuffix(d.Find("title").Text(), " - E-Hentai Galleries")

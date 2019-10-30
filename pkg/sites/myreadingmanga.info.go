@@ -4,7 +4,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"sync"
 
 	"github.com/The-Eye-Team/Comics-DL/pkg/idata"
 	"github.com/The-Eye-Team/Comics-DL/pkg/itypes"
@@ -16,7 +15,7 @@ import (
 )
 
 func init() {
-	idata.Hosts["myreadingmanga.info"] = itypes.HostVal{1, func(host string, id string, path string, outputDir string) func(*mbpp.BarProxy, *sync.WaitGroup) {
+	idata.Hosts["myreadingmanga.info"] = itypes.HostVal{1, func(host string, id string, path string, outputDir string) func(*mbpp.BarProxy) {
 
 		savePage := func(p int, d *goquery.Document, b *mbpp.BarProxy, dir string) {
 			s := d.Find("div.entry-content img.img-myreadingmanga")
@@ -26,11 +25,11 @@ func init() {
 				pn := iutil.PadPgNum(p) + "_" + iutil.PadPgNum(i)
 				//
 				urlS, _ := el.Attr("data-lazy-src")
-				mbpp.CreateDownloadJob(urlS, dir+"/"+pn+".jpg", mbpp.BlankWaitGroup(), b)
+				mbpp.CreateDownloadJob(urlS, dir+"/"+pn+".jpg", b)
 			})
 		}
 
-		return func(bar *mbpp.BarProxy, _ *sync.WaitGroup) {
+		return func(bar *mbpp.BarProxy) {
 
 			d := iutil.GetDoc("https://" + host + "/" + id + "/")
 			t := strings.TrimSuffix(d.Find("title").Text(), " - MyReadingManga")

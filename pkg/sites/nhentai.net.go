@@ -3,7 +3,6 @@ package sites
 import (
 	"os"
 	"strings"
-	"sync"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/The-Eye-Team/Comics-DL/pkg/idata"
@@ -15,17 +14,17 @@ import (
 )
 
 func init() {
-	idata.Hosts["nhentai.net"] = itypes.HostVal{2, func(host string, id string, path string, outputDir string) func(*mbpp.BarProxy, *sync.WaitGroup) {
+	idata.Hosts["nhentai.net"] = itypes.HostVal{2, func(host string, id string, path string, outputDir string) func(*mbpp.BarProxy) {
 
 		saveImage := func(i int, img *goquery.Selection, d string, b *mbpp.BarProxy) {
 			urlS, _ := img.Attr("data-src")
 			urlS = strings.ReplaceAll(urlS, "t.jpg", ".jpg")
 			urlS = strings.ReplaceAll(urlS, "/t.", "/i.")
 			pth := d + "/" + iutil.PadPgNum(i) + ".jpg"
-			go mbpp.CreateDownloadJob(urlS, pth, mbpp.BlankWaitGroup(), b)
+			go mbpp.CreateDownloadJob(urlS, pth, b)
 		}
 
-		return func(bar *mbpp.BarProxy, _ *sync.WaitGroup) {
+		return func(bar *mbpp.BarProxy) {
 
 			d := iutil.GetDoc("https://" + host + path)
 			t := d.Find("div#info h1").Text()
