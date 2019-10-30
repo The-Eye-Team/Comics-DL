@@ -38,6 +38,8 @@ func main() {
 
 	idata.Guard = semaphore.NewWeighted(int64(*flagConcur + 10))
 
+	util.RunOnClose(onClose)
+
 	if len(*flagURL) > 0 {
 		urlO, err := url.Parse(*flagURL)
 		if err != nil {
