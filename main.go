@@ -2,16 +2,17 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/The-Eye-Team/Comics-DL/pkg/idata"
 	"github.com/The-Eye-Team/Comics-DL/pkg/iutil"
+	"golang.org/x/sync/semaphore"
 
 	"github.com/nektro/go-util/mbpp"
 	"github.com/nektro/go-util/util"
@@ -35,8 +36,7 @@ func main() {
 
 	idata.KeepJpg = *flagKeepJpg
 
-	idata.Wg = new(sync.WaitGroup)
-	idata.C = 0
+	idata.Guard = semaphore.NewWeighted(int64(*flagConcur + 10))
 
 	if len(*flagURL) > 0 {
 		urlO, err := url.Parse(*flagURL)
@@ -55,6 +55,7 @@ func main() {
 		}
 		file, _ := os.Open(pth)
 		scan := bufio.NewScanner(file)
+		ctx := context.TODO()
 
 		for scan.Scan() {
 			line := scan.Text()
@@ -62,12 +63,7 @@ func main() {
 			if err != nil {
 				return
 			}
-			for idata.C == *flagConcur-10 {
-				idata.Wg.Wait()
-				idata.C = 0
-			}
-			idata.C++
-			idata.Wg.Add(1)
+			idata.Guard.Acquire(ctx, 1)
 			go iutil.DoSite(urlO, outDir)
 		}
 	}

@@ -1,14 +1,16 @@
 package idata
 
 import (
-	"sync"
+	"os"
 
 	"github.com/The-Eye-Team/Comics-DL/pkg/itypes"
+
+	"golang.org/x/sync/semaphore"
 )
 
 var (
 	Hosts   = map[string]itypes.HostVal{}
 	KeepJpg bool
-	Wg      *sync.WaitGroup
-	C       int
+	Guard   *semaphore.Weighted
+	Log     *os.File
 )
