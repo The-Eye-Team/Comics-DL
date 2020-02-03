@@ -29,7 +29,7 @@ func init() {
 			d := iutil.GetDoc("https://" + host + path)
 			t := d.Find("div#info h1").Text()
 
-			dir := outputDir + "/" + iutil.FixTitleForFilename(t)
+			dir := outputDir + "/" + "[" + id + "] " + iutil.FixTitleForFilename(t)
 			out := dir + ".cbz"
 			if util.DoesFileExist(out) {
 				return
