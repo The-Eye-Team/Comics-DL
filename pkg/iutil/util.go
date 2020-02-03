@@ -58,15 +58,7 @@ func PackCbzArchive(dirIn string, title string, bar *mbpp.BarProxy) {
 
 func FixTitleForFilename(t string) string {
 	n := Trim(t)
-	n = strings.Replace(n, ":", "", -1)
-	n = strings.Replace(n, "\\", "-", -1)
-	n = strings.Replace(n, "/", "-", -1)
-	n = strings.Replace(n, "*", "-", -1)
-	n = strings.Replace(n, "?", "-", -1)
-	n = strings.Replace(n, "\"", "-", -1)
-	n = strings.Replace(n, "<", "-", -1)
-	n = strings.Replace(n, ">", "-", -1)
-	n = strings.Replace(n, "|", "-", -1)
+	n = strings.Replace(n, "/", "+", -1)
 	return n
 }
 
