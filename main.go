@@ -22,7 +22,7 @@ import (
 )
 
 func main() {
-	flagConcur := flag.IntP("concurrency", "c", 5, "The number of files to download simultaneously.")
+	flagConcur := flag.IntP("concurrency", "c", 10, "The number of files to download simultaneously.")
 	flagOutDir := flag.StringP("output-dir", "o", "./results/", "Output directory")
 	flagKeepJpg := flag.BoolP("keep-jpg", "k", false, "Flag to keep/delete .jpg files of individual pages.")
 	flagURL := flag.StringP("url", "u", "", "URL of comic to download.")
