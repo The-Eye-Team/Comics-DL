@@ -47,9 +47,6 @@ func init() {
 						os.MkdirAll(dir, os.ModePerm)
 						for j := 1; true; j++ {
 							pth := dir + "/" + iutil.PadPgNum(j) + ".jpg"
-							if util.DoesFileExist(pth) {
-								continue
-							}
 							u := alias.F("https://readcomicsonline.ru/uploads/manga/%s/chapters/%s/%02d.jpg", id, issue, j)
 							res, _ := http.Head(u)
 							if res.StatusCode != 200 {
