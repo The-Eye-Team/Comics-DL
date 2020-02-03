@@ -4,11 +4,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/PuerkitoBio/goquery"
 	"github.com/The-Eye-Team/Comics-DL/pkg/idata"
 	"github.com/The-Eye-Team/Comics-DL/pkg/itypes"
 	"github.com/The-Eye-Team/Comics-DL/pkg/iutil"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/nektro/go-util/mbpp"
 	"github.com/nektro/go-util/util"
 )
