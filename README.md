@@ -5,6 +5,7 @@
 [![circleci](https://circleci.com/gh/The-Eye-Team/Comics-DL.svg?style=svg)](https://circleci.com/gh/The-Eye-Team/Comics-DL)
 [![release](https://img.shields.io/github/v/release/The-Eye-Team/Comics-DL)](https://github.com/The-Eye-Team/Comics-DL/releases/latest)
 [![goreportcard](https://goreportcard.com/badge/github.com/The-Eye-Team/Comics-DL)](https://goreportcard.com/report/github.com/The-Eye-Team/Comics-DL)
+[![codefactor](https://www.codefactor.io/repository/github/The-Eye-Team/Comics-DL/badge)](https://www.codefactor.io/repository/github/The-Eye-Team/Comics-DL)
 
 A comic and doujinshi archiver that saves as `.cbz` with support for the following sites:
 
