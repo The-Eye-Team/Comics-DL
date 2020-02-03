@@ -4,10 +4,12 @@ build_template() {
     export GOOS=$1
     export GOARCH=$2
     export GOARM=7
-    EXT=$3
-    TAG=$(date +'%Y.%m.%d')-$(git log --format=%h -1)
-    echo $TAG-$GOOS-$GOARCH
-    go build -ldflags="-s -w -X main.Version=$tag" -o ./bin/comics-dl-v$TAG-$GOOS-$GOARCH$EXT
+    ext=$3
+    date=$(date +'%Y.%m.%d')
+    version=${CIRCLE_BUILD_NUM-$date}
+    tag=v$version-$(git log --format=%h -1)
+    echo $tag-$GOOS-$GOARCH
+    go build -ldflags="-s -w -X main.Version=$tag" -o ./bin/comics-dl-v$tag-$GOOS-$GOARCH$ext
 }
 
 build_template darwin 386
