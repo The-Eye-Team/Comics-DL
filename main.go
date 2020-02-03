@@ -21,7 +21,14 @@ import (
 	_ "github.com/The-Eye-Team/Comics-DL/pkg/sites"
 )
 
+var (
+	Version = "vMASTER"
+)
+
 func main() {
+	util.Log("Starting up Comics-DL " + Version + "...")
+	util.Log("Brought to you by The-Eye.eu")
+
 	flagConcur := flag.IntP("concurrency", "c", 10, "The number of files to download simultaneously.")
 	flagOutDir := flag.StringP("output-dir", "o", "./results/", "Output directory")
 	flagKeepJpg := flag.BoolP("keep-jpg", "k", false, "Flag to keep/delete .jpg files of individual pages.")
