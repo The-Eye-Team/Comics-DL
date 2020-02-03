@@ -33,7 +33,7 @@ build_template linux s390x
 build_template netbsd 386
 build_template netbsd amd64
 build_template netbsd arm
-# build_template openbsd 386
+build_template openbsd 386
 build_template openbsd amd64
 build_template openbsd arm
 # build_template plan9 386
