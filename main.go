@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -77,5 +76,5 @@ func main() {
 }
 
 func onClose() {
-	fmt.Println("Completed download with", mbpp.GetTaskCount(), "tasks and", util.ByteCountIEC(mbpp.GetTaskDownloadSize()), "bytes.")
+	util.Log(mbpp.GetCompletionMessage())
 }
