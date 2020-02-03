@@ -56,7 +56,7 @@ func init() {
 							go mbpp.CreateDownloadJob(u, pth, jbar)
 						}
 						jbar.Wait()
-						iutil.PackCbzArchive(dir, host+"/"+id+"/"+issue, jbar)
+						go iutil.PackCbzArchive(dir, host+"/"+id+"/"+issue, jbar)
 					}
 				})
 			})
