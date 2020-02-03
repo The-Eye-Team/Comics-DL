@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"context"
 	"fmt"
 	"net/url"
 	"os"
@@ -12,7 +11,6 @@ import (
 
 	"github.com/The-Eye-Team/Comics-DL/pkg/idata"
 	"github.com/The-Eye-Team/Comics-DL/pkg/iutil"
-	"golang.org/x/sync/semaphore"
 
 	"github.com/nektro/go-util/mbpp"
 	"github.com/nektro/go-util/util"
@@ -43,9 +41,6 @@ func main() {
 
 	idata.KeepJpg = *flagKeepJpg
 
-	idata.Guard = semaphore.NewWeighted(int64(*flagConcur + 10))
-	ctx := context.TODO()
-
 	util.RunOnClose(onClose)
 
 	if len(*flagURL) > 0 {
@@ -54,8 +49,7 @@ func main() {
 			util.Log("URL parse error. Aborting!")
 			return
 		}
-		idata.Guard.Acquire(ctx, 1)
-		go iutil.DoSite(urlO, outDir)
+		iutil.DoSite(urlO, outDir)
 	}
 
 	if len(*flagFile) > 0 {
@@ -73,8 +67,7 @@ func main() {
 			if err != nil {
 				return
 			}
-			idata.Guard.Acquire(ctx, 1)
-			go iutil.DoSite(urlO, outDir)
+			iutil.DoSite(urlO, outDir)
 		}
 	}
 
