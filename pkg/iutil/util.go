@@ -73,3 +73,11 @@ func ParseInt(s string) int {
 	x, _ := strconv.ParseInt(s, 10, 32)
 	return int(x)
 }
+
+func PaddIssNum(s string) string {
+	x, err := strconv.ParseInt(s, 10, 32)
+	if err != nil {
+		return s
+	}
+	return fmt.Sprintf("%03d", x)
+}

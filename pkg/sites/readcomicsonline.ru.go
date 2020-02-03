@@ -36,7 +36,7 @@ func init() {
 					defer mbar.Increment(1)
 					//
 					dir2 := outputDir + "/" + name
-					dir := dir2 + "/Issue " + issue
+					dir := dir2 + "/Issue " + iutil.PaddIssNum(issue)
 					finp := dir + ".cbz"
 
 					if util.DoesFileExist(finp) {
