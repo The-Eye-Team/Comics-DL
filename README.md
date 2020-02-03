@@ -1,4 +1,5 @@
 # Comics-DL
+![loc](https://sloc.xyz/github/The-Eye-Team/Comics-DL)
 [![license](https://img.shields.io/github/license/The-Eye-Team/Comics-DL.svg)](https://github.com/The-Eye-Team/Comics-DL/blob/master/LICENSE)
 [![discord](https://img.shields.io/discord/302796547656253441.svg)](https://discord.gg/the-eye)
 [![CircleCI](https://circleci.com/gh/The-Eye-Team/Comics-DL.svg?style=svg)](https://circleci.com/gh/The-Eye-Team/Comics-DL)
