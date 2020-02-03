@@ -70,8 +70,8 @@ func main() {
 		}
 	}
 
-	time.Sleep(time.Second / 2)
 	mbpp.Wait()
+	time.Sleep(time.Second)
 	onClose()
 }
 
