@@ -31,7 +31,7 @@ build_template linux s390x
 # build_template nacl amd64p32
 # build_template nacl arm
 build_template netbsd 386
-# build_template netbsd amd64
+build_template netbsd amd64
 build_template netbsd arm
 # build_template openbsd 386
 build_template openbsd amd64
